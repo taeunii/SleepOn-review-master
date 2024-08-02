@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>title</title>
+    <meta lang="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src=/js/bootstrap.bundle.js></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // 페이지 로드 시 기본적으로 카드 결제 정보를 보이게 설정
+            $('#cardPayment').removeClass('hidden');
+            $('#bankPayment').addClass('hidden');
+            $('#paymentMethod').val('card');
+
+            $('#paymentType').on('change', function () {
+                var paymentType = $(this).val();
+                if (paymentType === 'card') {
+                    $('#cardPayment').removeClass('hidden');
+                    $('#bankPayment').addClass('hidden');
+                    $('#paymentMethod').val('card');
+                } else {
+                    $('#cardPayment').addClass('hidden');
+                    $('#bankPayment').removeClass('hidden');
+                    $('#paymentMethod').val('bank');
+                }
+            });
+
+            $('#reserveBtn').on('click', function () {
+                const paymentType = $('#paymentType').val();
+                const cardNumber = $('#cardNumber').val();
+                const cardCvc = $('#cardCVC').val();
+                const cardExpiry = $('#cardExpiry').val();
+                const bankName = $('#bankName').val();
+                const accountNumber = $('#accountNumber').val();
+                if (paymentType === "card") {
+                    if (!cardNumber || !cardCvc || !cardExpiry) {
+                        alert("결제 정보를 모두 입력해주세요.");
+                        return false;
+                    }
+                } else {
+                    if (!bankName || !accountNumber) {
+                        alert("결제 정보를 모두 입력해주세요.");
+                        return false;
+                    }
+                }
+                const contentId = $('#contentId').val();
+                const checkIn = $('#checkIn').val();
+                const checkOut = $('#checkOut').val();
+                const roomTitle = $("#roomtitle").val();
+                const userCnt = $('#userCnt').val();
+
+                // 선택된 값들을 URL 파라미터로 넘겨 페이지 이동
+                window.location.href = "/SleepOn/reserve?contentId=" + encodeURIComponent(contentId)
+                    + "&checkIn=" + encodeURIComponent(checkIn)
+                    + "&checkOut=" + encodeURIComponent(checkOut)
+                    + "&roomtitle=" + encodeURIComponent(roomTitle)
+                    + "&userCnt=" + encodeURIComponent(userCnt);
+            });
+
+            $('.back-btn').on('click', function () {
+                history.back();
+            });
+        });
+    </script>
+</head>
+<body class="paymentBody">
+<header th:replace="~{layout/header :: header-basic}"></header>
+<header th:replace="~{layout/header :: header-banner}"></header>
+<main>
+    <section class="container mx-auto">
+        <div class="paymentContainer">
+            <div class="paymentCard">
+                <div class="paymentHeader">예약 정보</div>
+                <div class="paymentInfo">
+                    <p><span class="paymentIcon">📅</span><strong>체크인:</strong> <span th:text="${checkIn}"></span></p>
+                    <p><span class="paymentIcon">📅</span><strong>체크아웃:</strong> <span th:text="${checkOut}"></span></p>
+                    <p><span class="paymentIcon">👤</span><strong>인원:</strong> <span th:text="${userCnt}"></span>명</p>
+                    <p><span class="paymentIcon">🏠</span><strong>예약 방:</strong> <span th:text="${roomtitle}"></span></p>
+                </div>
+                <div class="paymentInfo">
+                    <label for="paymentType"><strong>결제 방법:</strong></label>
+                    <select id="paymentType" class="form-control">
+                        <option value="card" selected>카드 결제</option>
+                        <option value="bank">무통장 입금</option>
+                    </select>
+                </div>
+                <div id="cardPayment" class="paymentSel">
+                    <div class="form-group">
+                        <label for="cardNumber">카드 번호</label>
+                        <input type="text" id="cardNumber" class="form-control" placeholder="1234-5678-9012-3456">
+                    </div>
+                    <div class="form-group">
+                        <label for="cardExpiry">유효 기간</label>
+                        <input type="text" id="cardExpiry" class="form-control" placeholder="MM/YY">
+                    </div>
+                    <div class="form-group">
+                        <label for="cardCVC">CVC</label>
+                        <input type="text" id="cardCVC" class="form-control" placeholder="123">
+                    </div>
+                </div>
+                <div id="bankPayment" class="hidden">
+                    <div class="form-group">
+                        <label for="bankName">은행명</label>
+                        <input type="text" id="bankName" class="form-control" placeholder="은행명을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="accountNumber">계좌 번호</label>
+                        <input type="text" id="accountNumber" class="form-control" placeholder="123-456-789012">
+                    </div>
+                </div>
+                <input type="hidden" id="contentId" name="contentId" th:value="${contentId}">
+                <input type="hidden" id="checkIn" name="checkIn" th:value="${checkIn}">
+                <input type="hidden" id="checkOut" name="checkOut" th:value="${checkOut}">
+                <input type="hidden" id="roomtitle" name="roomtitle" th:value="${roomtitle}">
+                <input type="hidden" id="userCnt" name="userCnt" th:value="${userCnt}">
+                <button type="button" class="reservBtn" id="reserveBtn">결제</button>
+            </div>
+        </div>
+    </section>
+</main>
+<footer th:replace="~{layout/footer :: footer}"></footer>
+</body>
+</html>

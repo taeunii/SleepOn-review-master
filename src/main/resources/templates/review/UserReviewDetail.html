@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>슬립온 - 리뷰 수정</title>
+    <meta lang="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+    <script src=/js/bootstrap.bundle.js></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<header th:replace="~{layout/header :: header-basic}"></header>
+<header th:replace="~{layout/header :: header-banner}"></header>
+<main>
+    <section class="container my-3">
+        <div class="reviewTitle">
+            <i class="fa-regular fa-comment-dots"></i>
+            <span class="Score">리뷰 수정</span>
+        </div>
+    </section>
+    <section class="container my-3">
+        <div class="profileCard">
+            <form id="detail" method="post">
+                <div class="reviewWrite">
+                    <label for="reviewTitle">숙소명</label>
+                    <div class="reviewInput">
+                        <input class="Score BoxBorderNon" type="text" id="reviewTitle" name="roomTitle" readonly th:text="${review.reservation.getRoomTitle()}">
+                    </div>
+                </div>
+<!--                <div class="reviewWrite mt-4">-->
+<!--                    <div class="row">-->
+<!--                        <div class="col-sm-4">-->
+<!--                            <label for="reviewTitle">별점</label>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-sm-9 mx-auto">-->
+<!--                                    <div class="px-3 my-3 d-flex justify-content-between">-->
+<!--                                        <span class="fw-bold align-content-center">위치</span>-->
+<!--                                        <div class="row d-flex justify-content-between location-stars" data-score="${initialLocationScore}">-->
+<!--                                            <div class="col-sm">-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="1"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="2"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="3"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="4"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="5"></span>-->
+<!--                                                <input type="hidden" name="reviewLocationNum" value="0">-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="px-3 my-3 d-flex justify-content-between">-->
+<!--                                        <span class="fw-bold align-content-center">체크인</span>-->
+<!--                                        <div class="row d-flex justify-content-between checkin-stars" data-score="${initialCheckinScore}">-->
+<!--                                            <div class="col-sm">-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="1"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="2"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="3"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="4"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="5"></span>-->
+<!--                                                <input type="hidden" name="reviewCheckinNum" value="0">-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="px-3 my-3 d-flex justify-content-between">-->
+<!--                                        <span class="fw-bold align-content-center">의사소통</span>-->
+<!--                                        <div class="row d-flex justify-content-between communication-stars" data-score="${initialCommunicationScore}">-->
+<!--                                            <div class="col-sm">-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="1"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="2"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="3"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="4"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="5"></span>-->
+<!--                                                <input type="hidden" name="reviewCommunicationNum" value="0">-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="px-3 my-3 d-flex justify-content-between">-->
+<!--                                        <span class="fw-bold align-content-center">청결도</span>-->
+<!--                                        <div class="row d-flex justify-content-between cleanliness-stars" data-score="${initialCleanlinessScore}">-->
+<!--                                            <div class="col-sm">-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="1"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="2"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="3"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="4"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="5"></span>-->
+<!--                                                <input type="hidden" name="reviewCleanlinessNum" value="0">-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="px-3 my-3 d-flex justify-content-between">-->
+<!--                                        <span class="fw-bold align-content-center">만족도</span>-->
+<!--                                        <div class="row d-flex justify-content-between satisfaction-stars" data-score="${initialSatisfactionsScore}">-->
+<!--                                            <div class="col-sm">-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="1"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="2"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="3"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="4"></span>-->
+<!--                                                <span class="bi-star" style="font-size: 30px;" data-value="5"></span>-->
+<!--                                                <input type="hidden" name="reviewSatisfactionNum" value="0">-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-sm-8">-->
+<!--                            <label for="reviewText">리뷰 내용</label>-->
+<!--                            <div class="mt-3 me-3">-->
+<!--                                <textarea class="form-control review-textarea" id="reviewText" name="reviewText" rows="4" required style="height: 300px;" th:text="${review.getReviewText()}"></textarea>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="reviewWrite mt-5">-->
+<!--                    <div class="reviewBtn">-->
+<!--                        <button type="button" class="BackBtn" id="back-btn">뒤로가기</button>-->
+<!--                        <button type="button" class="BackBlueBtn" id="update-btn">리뷰 수정</button>-->
+<!--                        <button type="button" class="BackBlueBtn" id="delete-btn">리뷰 삭제</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <input type="hidden" name="contentId" th:value="${review.reservation.getContentId()}">-->
+<!--                <input type="hidden" name="reservId" th:value="${review.reservation.getIdx()}">-->
+<!--                <input type="hidden" id="review-id" name="id" th:value="${review.getIdx()}">-->
+<!--                <input type="hidden" id="method" name="_method">-->
+            </form>
+        </div>
+    </section>
+
+
+
+    <!-- 스크롤 버튼 -->
+    <div id="scrollButtons">
+        <button id="scrollToTop" class="scroll-btn"><i class="fa-solid fa-chevron-up"></i></button>
+        <button id="scrollToBottom" class="scroll-btn"><i class="fa-solid fa-angle-down"></i></button>
+    </div>
+</main>
+<footer th:replace="~{layout/footer :: footer}"></footer>
+
+<!--<script>-->
+<!--    $(document).ready(function () {-->
+<!--        $('#back-btn').on('click', function () {-->
+<!--            history.back();-->
+<!--        });-->
+
+<!--        $("#delete-btn").on("click", function () {-->
+<!--            $("#method").val("DELETE");-->
+<!--            const id = $("#review-id").val();-->
+<!--            const detail = $("#detail")[0];-->
+<!--            detail.action = "/SleepOn/review/" + id;-->
+<!--            detail.submit();-->
+<!--        });-->
+
+<!--        $("#update-btn").on("click", function () {-->
+<!--            $("#method").val("PUT");-->
+<!--            const id = $("#review-id").val();-->
+<!--            const detail = $("#detail")[0];-->
+<!--            detail.action = "/SleepOn/review/" + id;-->
+<!--            detail.submit();-->
+<!--        });-->
+
+<!--        // 페이지 로드 시 버튼 숨기기-->
+<!--        $('#scrollToTop').show();-->
+<!--        $('#scrollToBottom').show();-->
+
+<!--        // 맨 위로 스크롤-->
+<!--        $('#scrollToTop').click(function () {-->
+<!--            $('html, body').animate({scrollTop: 0}, 300); // 속도를 300 밀리초로 설정-->
+<!--        });-->
+
+<!--        // 맨 아래로 스크롤-->
+<!--        $('#scrollToBottom').click(function () {-->
+<!--            $('html, body').animate({scrollTop: $(document).height() - $(window).height()}, 300); // 속도를 300 밀리초로 설정-->
+<!--        });-->
+
+<!--        let reviewData = {-->
+<!--            reviewLocationNum: 0,-->
+<!--            reviewCheckinNum: 0,-->
+<!--            reviewCommunicationNum: 0,-->
+<!--            reviewCleanlinessNum: 0,-->
+<!--            reviewSatisfactionNum: 0,-->
+<!--            reviewText: '',-->
+<!--            contentId: '숙소번호',-->
+<!--            reservId: ''-->
+<!--        };-->
+
+<!--        function setStarNum(starContainer, reviewKey) {-->
+<!--            const initialScore = $(starContainer).data('score');-->
+<!--            if (initialScore) {-->
+<!--                $(starContainer).find('.bi-star').slice(0, initialScore).removeClass('bi-star').addClass('bi-star-fill');-->
+<!--                reviewData[reviewKey] = initialScore;-->
+<!--            }-->
+
+<!--            $(starContainer).find('.bi-star, .bi-star-fill').on('click', function () {-->
+<!--                let index = $(this).index() + 1;-->
+<!--                // 모든 별의 상태를 초기화-->
+<!--                $(starContainer).find('.bi-star, .bi-star-fill').removeClass('bi-star-fill').addClass('bi-star');-->
+<!--                // 클릭된 별까지 채우기-->
+<!--                $(starContainer).find('.bi-star').slice(0, index).removeClass('bi-star').addClass('bi-star-fill');-->
+<!--                reviewData[reviewKey] = index;-->
+<!--            });-->
+<!--        }-->
+
+<!--        setStarNum('.location-stars', 'reviewLocationNum');-->
+<!--        setStarNum('.checkin-stars', 'reviewCheckinNum');-->
+<!--        setStarNum('.communication-stars', 'reviewCommunicationNum');-->
+<!--        setStarNum('.cleanliness-stars', 'reviewCleanlinessNum');-->
+<!--        setStarNum('.satisfaction-stars', 'reviewSatisfactionNum');-->
+
+<!--        function isAllStarRatingProvided() {-->
+<!--            return reviewData.reviewLocationNum > 0 &&-->
+<!--                reviewData.reviewCheckinNum > 0 &&-->
+<!--                reviewData.reviewCommunicationNum > 0 &&-->
+<!--                reviewData.reviewCleanlinessNum > 0 &&-->
+<!--                reviewData.reviewSatisfactionNum > 0;-->
+<!--        }-->
+
+<!--        // 폼 제출 이벤트 핸들러-->
+<!--        $('form').on('submit', function () {-->
+<!--            if (!isAllStarRatingProvided()) {-->
+<!--                alert('모든 항목에 별점을 선택해주세요.');-->
+<!--                event.preventDefault(); // 폼 제출 방지-->
+<!--            }-->
+<!--        });-->
+
+<!--        // 초기 별점 데이터를 설정-->
+<!--        function initializeReviewData(initialData) {-->
+<!--            $('.location-stars').data('score', initialData.reviewLocationNum);-->
+<!--            $('.checkin-stars').data('score', initialData.reviewCheckinNum);-->
+<!--            $('.communication-stars').data('score', initialData.reviewCommunicationNum);-->
+<!--            $('.cleanliness-stars').data('score', initialData.reviewCleanlinessNum);-->
+<!--            $('.satisfaction-stars').data('score', initialData.reviewSatisfactionNum);-->
+<!--            $('#reviewText').val(initialData.reviewText);-->
+<!--        }-->
+
+<!--        // 서버에서 초기 데이터를 받아와서 초기화-->
+<!--        function initializeReviewData(initialData) {-->
+<!--            $('.location-stars').data('score', initialData.reviewLocationNum);-->
+<!--            $('.checkin-stars').data('score', initialData.reviewCheckinNum);-->
+<!--            $('.communication-stars').data('score', initialData.reviewCommunicationNum);-->
+<!--            $('.cleanliness-stars').data('score', initialData.reviewCleanlinessNum);-->
+<!--            $('.satisfaction-stars').data('score', initialData.reviewSatisfactionNum);-->
+<!--            $('#reviewText').val(initialData.reviewText);-->
+
+<!--            // 초기 별점 설정-->
+<!--            setStarNum('.location-stars', 'reviewLocationNum');-->
+<!--            setStarNum('.checkin-stars', 'reviewCheckinNum');-->
+<!--            setStarNum('.communication-stars', 'reviewCommunicationNum');-->
+<!--            setStarNum('.cleanliness-stars', 'reviewCleanlinessNum');-->
+<!--            setStarNum('.satisfaction-stars', 'reviewSatisfactionNum');-->
+<!--        }-->
+
+<!--        // $.ajax({-->
+<!--        //     url: '/SleepOn/SubmitReview',-->
+<!--        //     type: 'POST',-->
+<!--        //     dataType: 'json',-->
+<!--        //     success: function (data) {-->
+<!--        //         // 서버에서 받은 데이터를 기반으로 초기화-->
+<!--        //         initializeReviewData(data);-->
+<!--        //     },-->
+<!--        //     error: function (error) {-->
+<!--        //         console.error('Error fetching review data:', error);-->
+<!--        //     }-->
+<!--        // });-->
+<!--    });-->
+<!--</script>-->
+</body>
+</html>

@@ -1,0 +1,1091 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbit&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Orbit&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'LINESeedKR-Bd', sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 30px; /* 네비바 높이만큼 패딩 추가 */
+}
+main {
+    flex: 1;
+    display: grid;
+    align-items: center;
+}
+
+/* header */
+/* header - nav */
+.navbar {
+    background-color: white;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000; /* 네비바가 항상 위에 오도록 설정 */
+}
+.carousel {
+    margin-top: 70px; /* 네비바와 배너 간격 조정 */
+}
+.navbar .logo {
+    font-family: 'Source Code Pro', sans-serif;
+    color: #FF385C;
+    font-size: 2em;
+    font-weight: bold;
+    padding-left: 15px;
+}
+.navbar-nav {
+    margin-left: auto;
+}
+.nav-link {
+    color: #333333;
+    display: flex;
+    gap: 0.2em;
+    animation: all ease-in 0.4s;
+}
+.nav-link:hover{
+    color: #FF585D;
+}
+.nav-icon{
+    vertical-align: middle;
+    line-height: 1;
+}
+/* 스크롤 */
+.scroll-btn {
+    position: fixed;
+    right: 10px;
+    z-index: 1000;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    margin: 1em;
+}
+
+#scrollToTop {
+    bottom: 60px;
+}
+
+#scrollToBottom {
+    bottom: 10px;
+}
+
+.scroll-btn:hover {
+    background-color: #f0f0f0;
+}
+.scroll-btn i {
+    font-size: 20px;
+}
+/* header - banner *//* header - banner */
+.banner {
+    background: url('../img/banner.jpg') no-repeat center center;
+    border-radius: 1.5em;
+    overflow: hidden;
+    height: 450px;
+    margin: 1em;
+    background-size: cover;
+    position: relative;
+}
+.banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* 어두운 오버레이 */
+}
+.banner-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 가로 정렬 */
+    align-items: center; /* 세로 정렬 */
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    animation: fadeIn 2s ease-in-out; /* 애니메이션 추가 */
+}
+.banner span {
+    color: white;
+    font-size: 40px;
+    vertical-align: middle;
+    margin: 0; /* 기본 여백 제거 */
+}
+.banner span:nth-last-child(1) {
+    font-size: 35px;
+}
+/* 스타일 조정 */
+.ProfileSection {
+    margin-top: 20px;
+}
+
+.carousel {
+    margin-bottom: 30px; /* 배너와 다른 요소들 간의 간격 조정 */
+}
+.carousel-item img {
+    height: 50vh; /* 높이를 50vh로 설정 */
+    object-fit: cover;
+    border-radius: 3em;
+    padding: 1em;
+    overflow: hidden;
+    background-size: cover;
+    position: relative;
+}
+.carousel-caption {
+    color: #fff; /* 글씨 색상 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 텍스트 그림자 */
+}
+.carousel-caption h5 {
+    font-size: 2rem; /* 제목 글씨 크기 */
+}
+.carousel-caption p {
+    font-size: 1.5rem; /* 설명 글씨 크기 */
+}
+.carousel-control-prev, .carousel-control-next {
+    width: 5%; /* 화살표 버튼 넓이 조정 */
+}
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    background-size: 100%, 100%; /* 아이콘 크기 조정 */
+}
+/* footer */
+.footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    text-align: center;
+    border-top: 1px solid #e7e7e7;
+    margin-top: 20px;
+}
+.footer p {
+    margin: 0;
+}
+.footer a {
+    color: #FF385C;
+    margin: 0 10px;
+}
+/* 기능 */
+/* 드래그 방지 */
+div {
+    -webkit-touch-callout: none;
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+/* 글씨체 */
+.Score{
+    font-family: 'S-CoreDream-3Light';
+}
+.orbit-regular {
+    font-family: "Orbit", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.source-code-pro-uniquifier {
+    font-family: "Source Code Pro", monospace;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+}
+/* textarea */
+.textarea {
+    background-color: #ffffff;
+    color: #000000;
+    resize: none;
+}
+
+.textarea[readonly] {
+    background-color: #ffffff;
+    color: #000000;
+    resize: none;
+}
+/* selectBox, input */
+.BoxBorderNon{
+    border-style: none;
+    outline : none;
+    padding : 0.2em 0.5em
+}
+/* btn */
+button {
+    border: none;
+    padding: 0.3em 0.8em;
+    border-radius: 1.5em;
+    transition: all ease-in 0.3s;
+}
+.SearchBtn {
+    background-color: #FF585D;
+    border : 2px solid #FF585D;
+    color : white;
+    border-radius: 50%;
+    padding: 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.SearchBtn:hover{
+    background-color: white;
+    border : 2px solid #FF585D;
+    color : #FF585D;
+}
+.SelectBtn {
+    background-color: transparent;
+    border: none;
+}
+.SelectBtn:hover,
+.SelectBtn-select {
+    color: #FF585D;
+}
+.BoarderBtn {
+    background-color: white;
+    border: 2px solid #FF585D;
+    color: #FF585D;
+}
+.BoarderBtn:hover {
+    background-color: #FF585D;
+    color : white;
+}
+.BackRedBtn {
+    background-color: #FF585D;
+    color : white;
+    border: 2px solid #FF585D;
+}
+.BackRedBtn:hover{
+    background-color: white;
+    color: #FF585D;
+}
+.BackBtn{
+    background-color: white;
+    border: 2px solid #a3abbd;
+    color: #a3abbd;
+}
+.BackBtn:hover{
+    border: 2px solid #7a7e86;
+    color: #7a7e86;
+}
+.ModalBackBtn{
+    background-color: transparent;
+    border: none;
+    color: #606060;
+}
+.ModalBackBtn:hover{
+    color: black;
+}
+
+/* 로그인 및 회원가입 */
+.formContainer{
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    background-color: white;
+    border: 1px solid rgba(217, 217, 217, 0.73);
+    border-radius: 0.5em;
+    box-shadow:  5px 5px 10px #d9d9d9,
+    -5px -5px 10px #ffffff;
+}
+.formContainer a{
+    color : #858585;
+}
+.formContainer a:hover{
+    color : #505050;
+}
+.register{
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+    width: 100%;
+}
+.registerFormGroup{
+    display: flex;
+    flex-direction: column;
+}
+.registerFormGroup label{
+    margin: 0;
+    font-size: 1.1em;
+    padding-left: 0.1em;
+}
+.registerFormGroup input{
+    padding: 0.5em;
+    border: 1px solid rgba(217, 217, 217, 0.73);
+    border-radius: 0.3em;
+    outline: none;
+}
+/* main */
+/* main - search bar */
+.search-bar-container {
+    display: flex;
+    justify-content: center;
+    margin: 1em 0em;
+}
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    padding: 10px 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.search-item {
+    display: flex;
+    flex-direction: column;
+    justify-items: left;
+}
+.search-item select,
+.search-item input{
+    width: 150px;
+}
+.search-item input[type=number]{
+    width: 100px;
+}
+.search-item label {
+    font-size: 12px;
+    color: #888;
+    padding-left: 0.5em;
+}
+/* main 인기 여행지 */
+.popularText,
+.selectText{
+    vertical-align: middle;
+    text-align: left;
+    margin: 1em 0em;
+    font-size: 2em;
+}
+.popularDestinations {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8em;
+}
+.popularCardTitle{
+    font-size: 1.5em;
+}
+.popularCardText{
+    font-size: 1em;
+}
+.card {
+    border: none;
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: scale(1.05);
+}
+.cardImg {
+    border-radius: 0.5em;
+    height: 200px; /* 이미지 높이 고정 */
+    object-fit: cover; /* 이미지 비율 유지하며 꽉 채우기 */
+}
+.cardBody{
+    padding: 0.5em;
+    height: 150px; /* 카드 본문 높이 고정 */
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+}
+.cardTitle {
+    font-size: 1.2em;
+}
+.cardText{
+    font-size: 1em;
+}
+/* main 어디로 갈까요? 부분 */
+.selectText{
+    text-align: right;
+}
+.selectAreaBar {
+    display: flex;
+    justify-content: center;
+}
+.selectAreaOpt {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(12, auto);
+    padding: 0.2em 0.8em;
+    border-radius: 1.5em;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+/* main page, 숙소 리스트 */
+.sleepOnMainSection,
+.sleepOnListSection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    justify-content: flex-start;
+    align-items: center;
+}
+.sleepOnListSection{
+    gap: 1.3em 0.8em;
+}
+.sleepOnMainSection .card,
+.sleepOnListSection .card{
+    height: 350px; /* 전체 카드 높이 고정 */
+    width: 300px;
+}
+.sleepOnListSection .card{
+    border-radius: 0.5em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.sleepOnListSection .cardBody{
+    padding: 0.5em;
+}
+.sleepOnBtn {
+    height: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: flex-end;
+}
+/* main page - list, area 및 정렬 */
+.listSortSection{
+    display: flex;
+    justify-content: space-between;
+}
+.listAreaText{
+    font-size: 1.3em;
+}
+.listSortSection select{
+    width: 120px;
+}
+/* modal */
+.modalText{
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+}
+.modalText i{
+    padding-right: 0.3em;
+    color: #505050;
+}
+.modalTitle{
+    font-size: 1.2em;
+}
+
+/* main my page */
+.ProfileSection{
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5em;
+    overflow: hidden;
+    padding: 3em;
+}
+.profileHeader{
+    display: grid;
+    text-align: right;
+    font-size: 30px;
+}
+.profileHeader span:nth-of-type(2){
+    font-size: 20px;
+}
+.profileBody{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    background-color: white;
+    padding: 1em;
+    border-radius: 0.5em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.profileCard {
+    border: 1px solid rgba(208, 208, 208, 0.45);
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    border-radius: 0.3em;
+    text-align: center;
+    overflow: hidden;
+}
+.polaroidSection{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1em;
+}
+.polaroidCard {
+    display: grid;
+    grid-template-rows: 1.5fr 0.5fr;
+    gap: 0.5em;
+    width: 100%;
+    height: 200px; /* 높이 조정 */
+}
+.polaroidHeader{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.2em;
+    color: #FF585D;
+    font-size: 40px;
+    padding: 0.5em;
+    background-color: #ffffff;
+}
+.polaroidBody{
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+.polaroidBody span,
+.polaroidBody strong{
+    font-size: 20px;
+    text-align: center;
+}
+.polaroidBody a{
+    font-size: 15px;
+    text-decoration: none;
+    color: white;
+    padding: 0.3em 0.8em;
+    border-radius: 1.5em;
+    transition: all ease-in 0.3s;
+    display: block;
+    margin-bottom: 50px; /* 버튼과 카드 하단의 간격 조정 */
+}
+
+/* my page - 예약 내역 */
+.reservationSection {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.reservationHeader{
+    padding: 1em;
+    text-align: left;
+}
+.reservationBody{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em;
+    background-color: white;
+    padding: 1em;
+}
+.reservationCardSection{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5em;
+}
+.reservationCard{
+    border: 1px solid rgba(208, 208, 208, 0.45);
+    border-left: 3px solid #FF385C;
+    padding: 1em;
+    border-top-right-radius: 2em;
+    border-bottom-right-radius: 2em;
+    display: flex;
+    flex-direction: column;
+}
+.reservationCardHeader {
+    display: flex;
+    font-size: 25px;
+    align-items: flex-end;
+}
+.reservationCardHeader span:nth-of-type(2) {
+    font-size: 15px;
+    color : #5e5e5e;
+}
+.reservationCardGrid{
+    padding-left: 10px;
+    display: grid;
+    grid-template-columns: 0.2fr 1.5fr;
+}
+.reservationIcon {
+    color: #FF385C;
+    font-size: 30px;
+    align-self: flex-end;
+}
+.reservationBtn{
+    text-align: right;
+}
+.reviewHeader{
+    width: 100%;
+    padding: 1em;
+}
+.nonReviewCard{
+    width: 100%;
+    border: 1px solid rgba(208, 208, 208, 0.45);
+    border-left: 3px solid #FF385C;
+    padding: 1em;
+    border-top-left-radius: 2em;
+    border-bottom-left-radius: 2em;
+}
+.reviewCardSection{
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5em;
+}
+.reviewCard{
+    border: 1px solid rgba(208, 208, 208, 0.45);
+    border-right: 3px solid #FF385C;
+    padding: 1em;
+    border-top-left-radius: 2em;
+    border-bottom-left-radius: 2em;
+    display: flex;
+    flex-direction: column;
+}
+/* inquiry */
+/* inquiry, 관리자 및 고객 list */
+.inquiryTitle{
+    display: flex;
+    gap: 0.3em;
+    align-items: center;
+    padding: 1em;
+    border-bottom: 1px solid #dedede;
+}
+.inquiryTitle span{
+    font-size: 20px;
+}
+.inquiryTitle i{
+    font-size: 40px;
+    color:#FF585D;
+}
+.inquiryContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+.inquirySection{
+    text-align: center;
+    display: grid;
+    grid-template-columns: 0.3fr 1.2fr 0.8fr 1fr 0.8fr;
+    padding: 1em;
+}
+.inquiryHeader{
+    color: #989898;
+}
+.inquiryBody{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 0.3em;
+    background-color: white;
+    color: #777777;
+    transition: transform 0.3s;
+}
+.inquiryBody a{
+    text-decoration: none;
+    color: black;
+}
+.inquiryBody:hover{
+    transform: scale(1.01);
+}
+.inquiryBtn{
+    display: flex;
+    justify-content: end;
+    gap: 0.5em;
+}
+.inquiryBtn a{
+    text-decoration: none;
+    padding: 0.3em 0.8em;
+    border-radius: 1.5em;
+    transition: all ease-in 0.3s;
+}
+/* inquiry - detail */
+.inquiryCard{
+    display: grid;
+    grid-template-columns: 0.1fr 1fr;
+    grid-template-rows: repeat(3, auto);
+    gap: 0.3em;
+}
+.adminInquiryCard{
+    display: grid;
+    grid-template-columns: 1fr 0.1fr;
+    grid-template-rows: repeat(3, auto);
+    gap: 0.3em;
+}
+.inquiryProfile {
+    grid-row: 1/4;
+    margin-bottom: 15px;
+    display: grid;
+    justify-items: center;
+    align-items: flex-end;
+    text-align: center;
+    color: #FF385C;
+}
+.inquiryProfile span{
+    font-size: 50px;
+}
+.inquiryProfileSpin {
+    animation: spin 5s linear infinite;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.inquiryQuest{
+    display: flex;
+    grid-row: 1/2;
+}
+.inquiryBubble{
+    grid-row: 2/3;
+    padding: 1em;
+    text-align: justify;
+    border-radius: 0.5em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.inquiryData {
+    display: flex;
+    grid-row: 3/4;
+}
+.inquiryWrite {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    margin: 0.5em;
+}
+.inquiryWrite label{
+    padding-left: 15px;
+    font-size: 19px;
+}
+.inquiryInput{
+    border-radius: 1.5em;
+    padding: 0.5em;
+    border: 1px solid rgba(217, 217, 217, 0.73);
+    width: 100%;
+}
+.inquiryInput select{
+    width: 200px;
+}
+
+/* review */
+.reviewTitle{
+    display: flex;
+    gap: 0.3em;
+    align-items: center;
+    padding: 1em;
+    border-bottom: 1px solid #dedede;
+}
+.reviewTitle span{
+    font-size: 20px;
+}
+.reviewTitle i{
+    font-size: 40px;
+    color:#FF585D;
+}
+.reviewContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+.reviewSection{
+    text-align: center;
+    display: grid;
+    grid-template-columns: 0.3fr 1.2fr 0.8fr 1fr 0.8fr;
+    padding: 1em;
+}
+.reviewHeader{
+    color: #989898;
+}
+.reviewBody{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 0.3em;
+    background-color: white;
+    color: #777777;
+    transition: transform 0.3s;
+}
+.reviewBody a{
+    text-decoration: none;
+    color: black;
+}
+.reviewBody:hover{
+    transform: scale(1.01);
+}
+.reviewBtn{
+    display: flex;
+    justify-content: end;
+    gap: 0.5em;
+}
+.reviewBtn a{
+    text-decoration: none;
+    padding: 0.3em 0.8em;
+    border-radius: 1.5em;
+    transition: all ease-in 0.3s;
+}
+/* review - detail */
+.reviewCard{
+    display: grid;
+    grid-template-columns: 0.1fr 1fr;
+    grid-template-rows: repeat(3, auto);
+    gap: 0.3em;
+}
+.adminReviewCard{
+    display: grid;
+    grid-template-columns: 1fr 0.1fr;
+    grid-template-rows: repeat(3, auto);
+    gap: 0.3em;
+}
+.reviewProfile {
+    grid-row: 1/4;
+    margin-bottom: 15px;
+    display: grid;
+    justify-items: center;
+    align-items: flex-end;
+    text-align: center;
+    color: #FF385C;
+}
+.reviewProfile span{
+    font-size: 50px;
+}
+.reviewProfileSpin {
+    animation: spin 5s linear infinite;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.reviewQuest{
+    display: flex;
+    grid-row: 1/2;
+}
+.reviewBubble{
+    grid-row: 2/3;
+    padding: 1em;
+    text-align: justify;
+    border-radius: 0.5em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.reviewData {
+    display: flex;
+    grid-row: 3/4;
+}
+.reviewWrite {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    margin: 0.5em;
+}
+.reviewWrite label{
+    padding-left: 15px;
+    font-size: 19px;
+}
+.reviewInput{
+    border-radius: 1.5em;
+    padding: 0.5em;
+    border: 1px solid rgba(217, 217, 217, 0.73);
+    width: 100%;
+}
+.reviewInput select{
+    width: 200px;
+}
+
+
+/* main page - hotel detail */
+.search-bar-icon{
+    font-size: 25px;
+    margin-left: -15px;
+    margin-top: -5px;
+    margin-bottom: -5px;
+    background-color: #FF385C;
+    border : 2px solid #FF385C;;
+    color : white;
+    border-radius: 50%;
+    padding: 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hotelDetailSection {
+    display: flex;
+    gap : 1em;
+    align-items: center;
+    padding: 1em;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+.hotelDetailImg{
+    border-radius: 8px;
+    height: 300px;
+    object-fit: cover; /* 이미지 비율 유지하며 꽉 채우기 */
+}
+.hotelDetailBody{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+}
+.hotelTitle{
+    width: 100%;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #b0b0b0;
+    font-size: 25px;
+}
+.hotelDetail{
+    display: grid;
+    grid-template-columns: 0.1fr 1.5fr;
+    width: 100%;
+    text-align: left;
+    font-size: 16px;
+}
+.hotelDetail i {
+    text-align: center;
+}
+.hotelDetail span{
+    padding-left: 3px;
+}
+.hotelTextArea {
+    width: 100%;
+    font-size: 13px;
+    color : #484848;
+    margin-top: 15px;
+    padding: 0.8em;
+    border-radius: 0.5em;
+    border : 1px solid #b6b6b6;
+}
+.hotelIconAni{
+    font-size: 20px;
+    color: #FF385C;;
+    animation: moveBackAndForth 2s infinite;
+}
+@keyframes moveBackAndForth {
+    0% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(10px); /* Adjust the distance as needed */
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+.hotelRoomSection {
+    display: flex;
+    flex-direction: column;
+    gap : 1em;
+    overflow: hidden;
+    justify-content: center;
+    align-items: flex-start;
+}
+.hotelRoomDetail{
+    width: 100%;
+    display: flex;
+    gap: 1em;
+    transition: all ease-in 0.3s;
+    padding: 1em;
+    border-radius: 0.5em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.hotelRoomDetail:hover{
+    transform: scale(1.01);
+}
+.hotelRoomtitle {
+    font-size: 20px;
+}
+.hotelRoomGrid{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 0.5fr 1.6fr;
+    font-size: 18px;
+}
+.roomDetailInfoGroup {
+    font-size: 15px;
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.roomDetailOption {
+    width: 100%;
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    border-radius: 0.5em;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+.roomDetailOptSection{
+    width: 100%;
+    display: grid;
+    gap: 0.5em;
+    grid-template-columns: repeat(7, auto);
+    padding: 1em;
+}
+.roomIcon{
+    color: #FF385C;;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.roomIconNull{
+    color: #9d9d9d;
+}
+.hotelRoomBtn{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: flex-end;
+}
+
+/* 결제 페이지 */
+.paymentBody {
+    background-color: #f5f5f5;
+}
+.paymentContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.paymentCard{
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.paymentHeader{
+    border-color: #FF385C;
+    color: #FF385C;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.paymentInfo {
+    margin-bottom: 20px;
+}
+.paymentIcon {
+    margin-right: 8px;
+}
+.hidden{
+    display: none;
+}
+.reservBtn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    background-color: #FF385C;
+    border: none;
+    color: white;
+    border-radius: 5px;
+}
+.reservBtn:hover {
+    background-color: #FF585D;
+}
+
+

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SleepOn</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/bootstrap.bundle.js"></script>
+</head>
+<body>
+<header th:replace="~{layout/header :: header-basic}"></header>
+<header th:replace="~{/layout/header :: header-banner}"></header>
+<main>
+    <!--검색-->
+    <section>
+        <div class="search-bar-container">
+            <div class="search-bar">
+                <div class="search-item">
+                    <label>여행지</label>
+                    <div class="d-flex gap-2">
+                        <select class="BoxBorderNon" id="AreaSel" name="AreaSel">
+                            <option selected value="">여행지</option>
+                            <option value="1">서울</option>
+                            <option value="6">부산</option>
+                            <option value="39">제주</option>
+                            <option value="31">경기</option>
+                            <option value="2">인천</option>
+                            <option value="32">강원</option>
+                            <option value="36">경상남도</option>
+                            <option value="35">경상북도</option>
+                            <option value="38">전라</option>
+                            <option value="34">충청남도</option>
+                            <option value="33">충청북도</option>
+                        </select>
+                        <select class="BoxBorderNon" id="SiGunGuSel" name="SiGunGuSel">
+                            <option selected value="">전국</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="search-item">
+                    <label>체크인</label>
+                    <input class="BoxBorderNon" id="checkIn" type="date">
+                </div>
+                <div class="search-item">
+                    <label>체크아웃</label>
+                    <input class="BoxBorderNon" id="checkOut" type="date">
+                </div>
+                <div class="search-item">
+                    <label>여행자</label>
+                    <input class="BoxBorderNon" id="userCnt" min="1" type="number" value="1">
+                </div>
+                <div class="search-item">
+                    <button class="SearchBtn" id="Search-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Popular Destinations -->
+    <section class="container my-3">
+        <div class="popularText">
+            <span>2024년, 당신을 위한 특별한 축제</span>
+        </div>
+        <div class="popularDestinations">
+            <div class="card">
+                <img alt="서울" class="cardImg" src="/img/seoul.jpg">
+                <div class="cardBody">
+                    <span class="popularCardTitle">서울</span>
+                    <span class="popularCardText">서울에서 함께,<br> 즐기기 좋은 행사를 찾아보세요.</span>
+                    <div class="d-grid justify-content-end">
+                        <button class="BoarderBtn" id="seoul-btn" type="button">행사 보기</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <img alt="부산" class="cardImg" src="/img/busan.jpg">
+                <div class="cardBody">
+                    <span class="popularCardTitle">부산</span>
+                    <span class="popularCardText">부산에서 함께,<br> 즐기기 좋은 행사를 찾아보세요.</span>
+                    <div class="d-grid justify-content-end">
+                        <button class="BoarderBtn" id="busan-btn" type="button">행사 보기</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <img alt="제주" class="cardImg" src="/img/jeju.jpg">
+                <div class="cardBody">
+                    <span class="popularCardTitle">제주</span>
+                    <span class="popularCardText">제주에서 함께,<br> 즐기기 좋은 행사를 찾아보세요.</span>
+                    <div class="d-grid justify-content-end">
+                        <button class="BoarderBtn" id="jeju-btn" type="button">행사 보기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 숙박업소 정보 -->
+    <section class="container my-3">
+        <div class="selectText">
+            <span>완벽한 여행, 완벽한 숙소</span>
+        </div>
+        <div class="selectAreaBar">
+            <div class="selectAreaOpt">
+                <button class="SelectBtn SelectBtn-select" data-value="">전국</button>
+                <button class="SelectBtn" data-value="1">서울</button>
+                <button class="SelectBtn" data-value="6">부산</button>
+                <button class="SelectBtn" data-value="39">제주</button>
+                <button class="SelectBtn" data-value="31">경기</button>
+                <button class="SelectBtn" data-value="2">인천</button>
+                <button class="SelectBtn" data-value="32">강원</button>
+                <button class="SelectBtn" data-value="36">경상남도</button>
+                <button class="SelectBtn" data-value="35">경상북도</button>
+                <button class="SelectBtn" data-value="38">전라</button>
+                <button class="SelectBtn" data-value="34">충청남도</button>
+                <button class="SelectBtn" data-value="33">충청북도</button>
+            </div>
+        </div>
+        <div class="sleepOnMainSection my-5" id="card-container">
+            <div class="text-center">
+                <p>조회된 데이터가 없습니다.</p>
+            </div>
+        </div>
+    </section>
+    <!-- 모달 창 -->
+    <div aria-hidden="true" aria-labelledby="detailModalLabel" class="modal fade" id="detailModal" role="dialog"
+         tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">숙박업소 정보</h5>
+                    <div class="ms-auto">
+                        <button class="ModalBackBtn fa-regular fa-circle-xmark" data-dismiss="modal" type="button"></button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <img alt="" class="img-fluid mb-3 rounded-3" id="modalImage" src="">
+                    <div class="modalText">
+                        <span id="modalTitle" class="modalTitle"></span>
+                        <div>
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span id="modalAddr"></span>
+                        </div>
+                        <div>
+                            <i class="fa-solid fa-square-phone"></i>
+                            <span id="modalTel"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="BackRedBtn" id="detailViewBtn" type="button">상세보기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 스크롤 버튼 -->
+    <div id="scrollButtons">
+        <button id="scrollToTop" class="scroll-btn"><i class="fa-solid fa-chevron-up"></i></button>
+        <button id="scrollToBottom" class="scroll-btn"><i class="fa-solid fa-angle-down"></i></button>
+    </div>
+</main>
+<footer th:replace="~{/layout/footer :: footer}"></footer>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const arrange = "O";
+        const numOfRows = "20";
+        const pageNo = "1";
+        const sigunguCode = "";
+
+        function loadAreaData(areaCode, query = "") {
+            console.log(areaCode);
+            $.ajax({
+                url: "/SleepOn/selectArea",
+                type: "post",
+                data: {
+                    areaCode: areaCode,
+                    sigunguCode: sigunguCode,
+                    arrange: arrange,
+                    numOfRows: numOfRows,
+                    pageNo: pageNo,
+                    query: query
+                },
+                success: function (respData) {
+                    const cardContainer = $("#card-container");
+                    cardContainer.empty();
+
+                    if (respData.length > 0) {
+                        for (let i = 0; i < respData.length; i++) {
+                            const card = `
+                                    <div class="card" style="height: 100%;" data-toggle="modal" data-target="#detailModal" data-title="${respData[i].title}" data-addr="${respData[i].addr1}" data-tel="${respData[i].tel}" data-image="${respData[i].firstimage}" data-contentid="${respData[i].contentid}">
+                                        <img class="cardImg" src="${respData[i].firstimage}" alt="">
+                                        <div class="cardBody">
+                                            <span class="cardTitle">${respData[i].title}</span>
+                                            <span class="cardText">${respData[i].addr1}</span>
+                                        </div>
+                                    </div>
+                            `;
+                            cardContainer.append(card);
+                        }
+                    } else {
+                        cardContainer.append('<div class="col-12"><p>조회된 데이터가 없습니다.</p></div>');
+                    }
+                },
+                error: function () {
+                    alert("통신 중 오류 발생");
+                }
+            });
+        }
+
+        // 페이지 로드 시 데이터 로드
+        loadAreaData("");
+
+        // select 값 변경 시 데이터 로드
+        $(".SelectBtn").on("click", function () {
+            const areaCode = $(this).data("value");
+            loadAreaData(areaCode);
+
+            // 버튼 색상 변경
+            $(".SelectBtn").removeClass("SelectBtn-select");
+            $(this).addClass("SelectBtn-select");
+        });
+
+        // 지역 선택 시 시군구 데이터 로드
+        $('#AreaSel').on("change", function () {
+            const areaCode = $("#AreaSel option:selected").val();
+            console.log(areaCode);
+
+            $.ajax({
+                url: "/SleepOn/SigunguSelect",
+                type: "post",
+                data: {areaCode: areaCode},
+                success: function (data) {
+                    console.log(data);
+                    const SiGunGuSel = $('#SiGunGuSel');
+                    SiGunGuSel.empty();
+                    let html = "<option value='' selected>전국</option>";
+
+                    $.each(data, function (key, value) {
+                        html += "<option value='" + key + "'>" + value + "</option>";
+                    });
+
+                    SiGunGuSel.append(html);
+                },
+                error: function (xhr, status, error) {
+                    alert("통신실패 : " + xhr.responseText);
+                }
+            });
+        });
+
+        // 검색 버튼 클릭 시 페이지 이동
+        $('#Search-btn').on("click", function () {
+            const areaCode = $("#AreaSel option:selected").val();
+            const sigunguCode = $("#SiGunGuSel option:selected").val();
+            const checkIn = $('#checkIn').val();
+            const checkOut = $('#checkOut').val();
+            const userCnt = $('#userCnt').val();
+
+            if (!areaCode || !checkIn || !checkOut || !userCnt) {
+                return false;
+            }
+
+            // 선택된 값들을 URL 파라미터로 넘겨 페이지 이동
+            window.location.href = "/SleepOn/Search?areaCode=" + encodeURIComponent(areaCode)
+                + "&sigunguCode=" + encodeURIComponent(sigunguCode)
+                + "&checkIn=" + encodeURIComponent(checkIn)
+                + "&checkOut=" + encodeURIComponent(checkOut)
+                + "&userCnt=" + encodeURIComponent(userCnt);
+        });
+
+        // 페이지 이동
+        $('#seoul-btn').on("click", function () {
+            console.log("서울");
+            const areaCode = "1";
+            window.location.href = "/SleepOn/SearchFestival?areaCode=" + areaCode;
+        });
+        $('#busan-btn').on("click", function () {
+            console.log("부산");
+            const url = `/SleepOn/SearchFestival?areaCode=6`;
+            window.location.href = url;
+        });
+        $('#jeju-btn').on("click", function () {
+            console.log("제주");
+            const url = `/SleepOn/SearchFestival?areaCode=39`;
+            window.location.href = url;
+        });
+
+        // 체크인 날짜가 오늘 이전으로 선택되지 않도록 설정
+        const today = new Date().toISOString().split("T")[0];
+        $('#checkIn').attr('min', today);
+
+        // 체크인 날짜 선택 시 체크아웃 날짜 제약 설정
+        $('#checkIn').on('change', function () {
+            const checkinDate = $(this).val();
+            $('#checkOut').attr('min', checkinDate);
+        });
+
+        // 체크아웃 날짜 선택 시 체크인 날짜가 체크아웃 날짜보다 이후일 수 없도록 설정
+        $('#checkOut').on('change', function () {
+            const checkinDate = $('#checkIn').val();
+            if ($(this).val() <= checkinDate) {
+                alert("체크아웃 날짜는 체크인 날짜보다 이후여야 합니다.");
+                $(this).val('');
+            }
+        });
+
+        // 인원 수 선택, input 창 포커스 시 선택되어있던 인원 없애기
+        $('#userCnt').on('focus', function () {
+            $(this).val("");
+        });
+
+        // 모달에 데이터 채우기
+        $('#detailModal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget); // 모달을 트리거한 버튼
+            const title = button.data('title');
+            const addr = button.data('addr');
+            const tel = button.data('tel');
+            const image = button.data('image');
+
+            const contentid = button.data('contentid');
+            const userCnt = "0";
+            const checkIn = "";
+            const checkOut = "";
+
+            const modal = $(this);
+            modal.find('#modalTitle').text(title);
+            modal.find('#modalAddr').text(addr);
+            modal.find('#modalTel').text(tel);
+            modal.find('#modalImage').attr('src', image);
+
+            // 상세보기 버튼 클릭 이벤트 핸들러 설정
+            modal.find('#detailViewBtn').off('click').on('click', function () {
+                window.location.href = "/SleepOn/Detail?contentId=" + encodeURIComponent(contentid) + "&userCnt=" + encodeURIComponent(userCnt) + "&checkIn=" + encodeURIComponent(checkIn) + "&checkOut=" + encodeURIComponent(checkOut);
+            });
+        });
+
+        // 페이지 로드 시 버튼 숨기기
+        $('#scrollToTop').show();
+        $('#scrollToBottom').show();
+
+        // 맨 위로 스크롤
+        $('#scrollToTop').click(function () {
+            $('html, body').animate({scrollTop: 0}, 300); // 속도를 300 밀리초로 설정
+        });
+
+        // 맨 아래로 스크롤
+        $('#scrollToBottom').click(function () {
+            $('html, body').animate({scrollTop: $(document).height() - $(window).height()}, 300); // 속도를 300 밀리초로 설정
+        });
+    });
+</script>
+</body>
+</html>

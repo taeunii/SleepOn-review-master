@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>슬립온 - 문의 남기기</title>
+    <meta lang="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src=/js/bootstrap.bundle.js></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#back-btn').on('click', function () {
+                history.back();
+            });
+            $('#reservType-select').on('change', function () {
+                const reservType = $(this).val();
+                const $reservSelect = $('#reserv-select');
+
+                if (reservType === '2') {
+                    // 객실 문의인 경우 "선택 없음" 옵션 제외한 나머지 옵션 표시
+                    $reservSelect.find('option:not(#noSelect)').show();
+                    $reservSelect.find('option#noSelect').hide();
+                } else {
+                    // 일반 문의인 경우 "선택 없음" 옵션만 표시
+                    $reservSelect.find('option:not(#noSelect)').hide();
+                    $reservSelect.find('option#noSelect').show();
+                }
+                // 첫 번째 옵션 선택
+                $reservSelect.find('option:visible').first().prop('selected', true);
+            });
+            // 페이지 로드 시 초기화
+            $('#reservType-select').trigger('change');
+
+            // 페이지 로드 시 버튼 숨기기
+            $('#scrollToTop').show();
+            $('#scrollToBottom').show();
+
+            // 맨 위로 스크롤
+            $('#scrollToTop').click(function () {
+                $('html, body').animate({scrollTop: 0}, 300); // 속도를 300 밀리초로 설정
+            });
+
+            // 맨 아래로 스크롤
+            $('#scrollToBottom').click(function () {
+                $('html, body').animate({scrollTop: $(document).height() - $(window).height()}, 300); // 속도를 300 밀리초로 설정
+            });
+        });
+    </script>
+</head>
+<body>
+<header th:replace="~{layout/header :: header-basic}"></header>
+<header th:replace="~{layout/header :: header-banner}"></header>
+<main>
+    <section class="container my-3">
+        <div class="inquiryTitle">
+            <i class="fa-regular fa-comment-dots"></i>
+            <span class="Score">문의 남기기</span>
+        </div>
+    </section>
+    <section class="container my-3">
+        <form action="/SleepOn/SubmitInquiry" method="post">
+            <div class="profileCard">
+                <div class="inquiryWrite">
+                    <label for="inquiryTitle">제목</label>
+                    <div class="inquiryInput">
+                        <input class="Score BoxBorderNon" type="text" id="inquiryTitle" name="title" placeholder="제목을 입력하세요." required>
+                    </div>
+                </div>
+                <div class="inquiryWrite">
+                    <label>문의 종류</label>
+                    <div class="inquiryInput">
+                        <select id="reservType-select" class="Score BoxBorderNon">
+                            <option value="1" selected>일반 문의</option>
+                            <option value="2">객실 문의</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="inquiryWrite">
+                    <label for="reserv-select">객실 선택</label>
+                    <div class="inquiryInput">
+                        <select id="reserv-select" name="reservId" class="Score BoxBorderNon">
+                            <option id="noSelect" value="">선택 없음</option>
+                            <option th:each="item : ${reservations}" th:id="'reservOption' + ${item.getIdx()}" th:value="${item.getIdx()}" th:text="${item.getRoomTitle()}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="inquiryWrite">
+                    <label for="inquiryContent">문의 내용</label>
+                    <textarea class="form-control inquiry-textarea" id="inquiryContent" name="inquiry" rows="4" required></textarea>
+                </div>
+                <div class="inquiryWrite">
+                    <div class="inquiryBtn">
+                        <button type="button" class="BackBtn" id="back-btn">뒤로가기</button>
+                        <button type="submit" class="BackRedBtn">문의 제출</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+    <!-- 스크롤 버튼 -->
+    <div id="scrollButtons">
+        <button id="scrollToTop" class="scroll-btn"><i class="fa-solid fa-chevron-up"></i></button>
+        <button id="scrollToBottom" class="scroll-btn"><i class="fa-solid fa-angle-down"></i></button>
+    </div>
+</main>
+<footer th:replace="~{layout/footer :: footer}"></footer>
+</body>
+</html>

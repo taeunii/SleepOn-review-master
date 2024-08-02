@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SleepOn</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="/js/bootstrap.bundle.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const areaCode = $('#areaCode').val();
+            let sigunguCode = $('#sigunguCode').val();
+            let arrange = $('#arrangeSel option:selected').val();
+            let checkIn = $('#checkIn').val();
+            let checkOut = $('#checkOut').val();
+            let userCnt = $('#userCnt').val();
+            let numOfRows = "1000";
+            let pageNo = "1";
+
+            window.PageMove = function (button){
+                const contentId = $(button).val();
+                console.log(contentId);
+                window.location.href = "/SleepOn/Detail?contentId=" + encodeURIComponent(contentId) + "&userCnt=" + encodeURIComponent(userCnt) + "&checkIn=" + encodeURIComponent(checkIn) + "&checkOut=" + encodeURIComponent(checkOut);
+            }
+
+            function loadAreaData() {
+                console.log(areaCode);
+                $.ajax({
+                    url: "/SleepOn/selectArea",
+                    type: "post",
+                    data: {
+                        areaCode: areaCode,
+                        sigunguCode: sigunguCode,
+                        arrange: arrange,
+                        numOfRows: numOfRows,
+                        pageNo: pageNo
+                    },
+                    success: function (respData) {
+                        const cardContainer = $("#card-container");
+                        cardContainer.empty();
+
+                        if (respData.length > 0) {
+                            for (let i = 0; i < respData.length; i++) {
+                                let imgToUrl = respData[i].firstimage;
+                                let title = respData[i].title;
+
+// [한국~~] 패턴과 괄호로 시작되는 내용 제거
+                                title = title.replace(/\[한국.*?\]|\(.*?\)/g, '').trim();
+                                console.log(title);
+
+                                if ((respData[i].firstimage).toString() === '') {
+                                    imgToUrl = "/img/noimg.jpg";
+                                }
+                                const card = `
+                                    <div class="card">
+                                        <img class="cardImg" src="${imgToUrl}" alt="">
+                                        <div class="cardBody">
+                                            <span class="cardTitle">${title}</span>
+                                            <span class="cardText">${respData[i].addr1}</span>
+                                            <div class="sleepOnBtn">
+                                                <button class="BoarderBtn" type="button" onclick="PageMove(this)" value="${respData[i].contentid}">예약</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                            `;
+                                cardContainer.append(card);
+                            }
+                        } else {
+                            cardContainer.append('<div class="text-center"><p>조회된 데이터가 없습니다.</p></div>');
+                        }
+                    },
+                    error: function () {
+                        alert("통신 중 오류 발생");
+                    }
+                });
+            }
+
+            function loadAreaSelect(areaCode) {
+                console.log(areaCode);
+                $('#AreaSel').val(areaCode);
+
+                $.ajax({
+                    url: "/SleepOn/SigunguSelect",
+                    type: "post",
+                    data: {areaCode: areaCode},
+                    success: function (data) {
+                        console.log(data);
+                        const SiGunGuSel = $('#SiGunGuSel');
+                        SiGunGuSel.empty();
+                        let html = "<option value='' selected>전국</option>";
+
+                        $.each(data, function (key, value) {
+                            html += "<option value='" + key + "'>" + value + "</option>";
+                        });
+
+                        SiGunGuSel.append(html);
+                        SiGunGuSel.val(sigunguCode);
+                    },
+                    error: function (xhr, status, error) {
+                        alert("통신실패 : " + xhr.responseText);
+                    }
+                })
+            }
+
+            // 페이지 로드 시 데이터 로드
+            loadAreaData();
+            loadAreaSelect(areaCode);
+
+            // 지역 선택 시 시군구 데이터 로드
+            $('#AreaSel').on("change", function () {
+                loadAreaSelect($('#AreaSel option:selected').val());
+                sigunguCode = "";
+            });
+
+            // 검색 버튼 클릭 시 페이지 이동
+            $('#Search-btn').on("click", function () {
+                const areaCode = $("#AreaSel option:selected").val();
+                const sigunguCode = $("#SiGunGuSel option:selected").val();
+                checkIn = $('#checkIn').val();
+                checkOut = $('#checkOut').val();
+                userCnt = $('#userCnt').val();
+
+                if (!areaCode || !checkIn || !checkOut || !userCnt) {
+                    return false;
+                }
+
+                // 선택된 값들을 URL 파라미터로 넘겨 페이지 이동
+                window.location.href = "/SleepOn/Search?areaCode=" + encodeURIComponent(areaCode)
+                    + "&sigunguCode=" + encodeURIComponent(sigunguCode)
+                    + "&checkIn=" + encodeURIComponent(checkIn)
+                    + "&checkOut=" + encodeURIComponent(checkOut)
+                    + "&userCnt=" + encodeURIComponent(userCnt);
+            });
+
+            // 제목순, 최신순 정렬
+            $('#arrangeSel').on("change", function (){
+                arrange = $('#arrangeSel option:selected').val();
+                loadAreaData();
+            });
+
+            // 체크인 날짜가 오늘 이전으로 선택되지 않도록 설정
+            const today = new Date().toISOString().split("T")[0];
+            $('#checkIn').attr('min', today);
+
+            // 체크인 날짜 선택 시 체크아웃 날짜 제약 설정
+            $('#checkIn').on('change', function () {
+                const checkinDate = $(this).val();
+                $('#checkOut').attr('min', checkinDate);
+            });
+
+            // 체크아웃 날짜 선택 시 체크인 날짜가 체크아웃 날짜보다 이후일 수 없도록 설정
+            $('#checkOut').on('change', function () {
+                const checkinDate = $('#checkIn').val();
+                if ($(this).val() <= checkinDate) {
+                    alert("체크아웃 날짜는 체크인 날짜보다 이후여야 합니다.");
+                    $(this).val('');
+                }
+            });
+
+            // 페이지 로드 시 버튼 숨기기
+            $('#scrollToTop').show();
+            $('#scrollToBottom').show();
+
+            // 맨 위로 스크롤
+            $('#scrollToTop').click(function () {
+                $('html, body').animate({scrollTop: 0}, 300); // 속도를 300 밀리초로 설정
+            });
+
+            // 맨 아래로 스크롤
+            $('#scrollToBottom').click(function () {
+                $('html, body').animate({scrollTop: $(document).height() - $(window).height()}, 300); // 속도를 300 밀리초로 설정
+            });
+        });
+    </script>
+</head>
+<body>
+<header th:replace="~{layout/header :: header-basic}"></header>
+<header th:replace="~{layout/header :: header-banner}"></header>
+<main>
+    <section class="my-2">
+        <div class="search-bar-container">
+            <div class="search-bar">
+                <div class="search-item">
+                    <label>여행지</label>
+                    <div class="d-flex gap-2">
+                        <select class="BoxBorderNon" id="AreaSel" name="AreaSel">
+                            <option value="1">서울</option>
+                            <option value="6">부산</option>
+                            <option value="39">제주</option>
+                            <option value="31">경기</option>
+                            <option value="2">인천</option>
+                            <option value="32">강원</option>
+                            <option value="36">경상남도</option>
+                            <option value="35">경상북도</option>
+                            <option value="38">전라</option>
+                            <option value="34">충청남도</option>
+                            <option value="33">충청북도</option>
+                        </select>
+                        <select class="BoxBorderNon" id="SiGunGuSel" name="SiGunGuSel">
+                            <option selected value="">전국</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="search-item">
+                    <label>체크인</label>
+                    <input class="BoxBorderNon" id="checkIn" th:value="${checkIn}" type="date">
+                </div>
+                <div class="search-item">
+                    <label>체크아웃</label>
+                    <input class="BoxBorderNon" id="checkOut" th:value="${checkOut}" type="date">
+                </div>
+                <div class="search-item">
+                    <label>여행자</label>
+                    <input class="BoxBorderNon" id="userCnt" min="1" th:value="${userCnt}" type="number" value="1">
+                </div>
+                <div class="search-item">
+                    <button class="SearchBtn" id="Search-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="my-2">
+        <div class="container">
+            <div class="listSortSection">
+                <div class="listAreaText">
+                    <div th:if="${sigunguCode} == ''">
+                        <span th:text="${areaName}"></span>의 완벽한 밤, SleepOn 추천 숙소
+                    </div>
+                    <div th:unless="${sigunguCode} == ''">
+                        <span th:text="${sigunguName}"></span>의 완벽한 밤, SleepOn 추천 숙소
+                    </div>
+                </div>
+                <div>
+                    <select class="form-select Score" id="arrangeSel" name="arrangeSel">
+                        <option selected value="A">제목순</option>
+                        <option value="D">최신순</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="my-2">
+        <div class="container">
+            <div class="sleepOnListSection" id="card-container">
+                <input id="areaCode" th:value="${areaCode}" type="hidden">
+                <input id="sigunguCode" th:value="${sigunguCode}" type="hidden">
+            </div>
+        </div>
+    </section>
+    <!-- 스크롤 버튼 -->
+    <div id="scrollButtons">
+        <button id="scrollToTop" class="scroll-btn"><i class="fa-solid fa-chevron-up"></i></button>
+        <button id="scrollToBottom" class="scroll-btn"><i class="fa-solid fa-angle-down"></i></button>
+    </div>
+</main>
+<footer th:replace="~{/layout/footer :: footer}"></footer>
+</body>
+</html>

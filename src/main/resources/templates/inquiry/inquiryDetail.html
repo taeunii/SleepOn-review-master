@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title>슬립온 - 문의 내역</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header th:replace="~{/layout/header :: header-basic}"></header>
+<header th:replace="~{layout/header :: header-banner}"></header>
+<main>
+    <section class="container">
+        <div class="inquiryTitle">
+            <i class="fa-solid fa-circle-user"></i>
+            <span class="Score" th:if="${session.user.isManager()}">고객 상담 문의</span>
+            <span class="Score" th:unless="${session.user.isManager()}" th:text="|${user.name}님의 문의 내역|"></span>
+        </div>
+    </section>
+    <section class="container my-3">
+        <div class="inquiryCard">
+            <div class="inquiryProfile">
+                <span class="fa-solid fa-circle-question"></span>
+            </div>
+            <div class="inquiryQuest text-start">
+                <span th:if="${inquiry.reservation != null}" th:text="|Q. ${inquiry.getTitle()} (객실문의 / ${inquiry.reservation.roomTitle})|"></span>
+                <span th:unless="${inquiry.reservation != null}" th:text="|Q. ${inquiry.getTitle()} (일반문의)|"></span>
+            </div>
+            <div class="inquiryBubble">
+                <span th:text="${inquiry.getInquiry()}"></span>
+            </div>
+            <div class="inquiryData justify-content-end">
+                <span th:text="${#temporals.format(inquiry.getCreateDate(), 'yyyy-MM-dd HH:mm')}"></span>
+            </div>
+        </div>
+    </section>
+    <section class="container my-3">
+        <div th:unless="${session.user.isManager()}" class="adminInquiryCard">
+            <div class="inquiryQuest text-start">
+                <span th:if="${inquiry.getReply() != null}">A. 답변 완료</span>
+                <span th:unless="${inquiry.getReply() != null}">A. 답변 작성 중</span>
+            </div>
+            <div class="inquiryBubble">
+                <span th:if="${inquiry.getReply() != null}" th:text="${inquiry.getReply()}"></span>
+                <span th:unless="${inquiry.getReply() != null}">답변을 작성 중입니다.</span>
+            </div>
+            <div class="inquiryData justify-content-end">
+                <span th:text="${#temporals.format(inquiry.getReplyDate(), 'yyyy-MM-dd HH:mm')}"></span>
+            </div>
+            <div class="inquiryProfile">
+                <span th:if="${inquiry.getReply() != null}" class="fa-solid fa-circle-check"></span>
+                <span th:unless="${inquiry.getReply() != null}" class="inquiryProfileSpin fa-solid fa-spinner"></span>
+            </div>
+        </div>
+        <div th:if="${session.user.isManager()}">
+            <div th:if="${inquiry.getReply() == null}" class="adminInquiryCard">
+                <div class="inquiryQuest justify-content-end">
+                    <span>A. 답변 작성 예정</span>
+                </div>
+                <div class="inquiryBubble">
+                    <form action="/SleepOn/saveReply" method="post">
+                        <input name="id" th:value="${inquiry.getIdx()}" type="hidden">
+                        <div class="form-group">
+                                <textarea class="form-control BoxBorderNon" id="reply-content" name="reply" placeholder="답변을 입력하세요"
+                                          rows="5"></textarea>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button class="BackRedBtn" type="submit">등록</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="inquiryData justify-content-end">
+                    <span>작성 중</span>
+                </div>
+                <div class="inquiryProfile">
+                    <span class="inquiryProfileSpin fa-solid fa-spinner"></span>
+                </div>
+            </div>
+            <div th:unless="${inquiry.getReply() == null}" class="adminInquiryCard">
+                <div class="inquiryQuest justify-content-end">
+                    <span>A. 답변 완료</span>
+                </div>
+                <div class="inquiryBubble">
+                    <span th:text="${inquiry.getReply()}"></span>
+                </div>
+                <div class="inquiryData justify-content-end">
+                    <span th:text="${#temporals.format(inquiry.getReplyDate(), 'yyyy-MM-dd HH:mm')}"></span>
+                </div>
+                <div class="inquiryProfile">
+                    <span class="fa-solid fa-circle-check"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="container my-3">
+        <div th:if="${session.user.isManager()}" class="inquiryBtn">
+            <button class="BackBtn back-btn" type="button">뒤로가기</button>
+        </div>
+        <div th:unless="${session.user.isManager()}">
+            <form action="/SleepOn/deleteInquiry" method="post">
+                <input name="id" th:value="${inquiry.getIdx()}" type="hidden">
+                <div class="inquiryBtn">
+                    <button class="BackBtn back-btn" type="button">뒤로가기</button>
+                    <button class="BackBlueBtn" type="submit">문의 삭제</button>
+                </div>
+            </form>
+        </div>
+    </section>
+    <!-- 스크롤 버튼 -->
+    <div id="scrollButtons">
+        <button id="scrollToTop" class="scroll-btn"><i class="fa-solid fa-chevron-up"></i></button>
+        <button id="scrollToBottom" class="scroll-btn"><i class="fa-solid fa-angle-down"></i></button>
+    </div>
+</main>
+<footer th:replace="~{/layout/footer :: footer}"></footer>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.back-btn').on('click', function () {
+            history.back();
+        });
+
+        // 페이지 로드 시 버튼 숨기기
+        $('#scrollToTop').show();
+        $('#scrollToBottom').show();
+
+        // 맨 위로 스크롤
+        $('#scrollToTop').click(function () {
+            $('html, body').animate({scrollTop: 0}, 300); // 속도를 300 밀리초로 설정
+        });
+
+        // 맨 아래로 스크롤
+        $('#scrollToBottom').click(function () {
+            $('html, body').animate({scrollTop: $(document).height() - $(window).height()}, 300); // 속도를 300 밀리초로 설정
+        });
+    });
+</script>
+</body>
+</html>

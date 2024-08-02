@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SleepOn - 지역 행사 정보</title>
+    <meta lang="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src=/js/bootstrap.bundle.js></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const areaCode = $('#areaCode').val();
+            const areaName = $('#areaName').val();
+            console.log(areaCode);
+            console.log(areaName);
+            function loadFestival() {
+                console.log("시작");
+                $.ajax({
+                    url: "/SleepOn/FestivalArea",
+                    type : "post",
+                    data : {areaCode : areaCode},
+                    success : function (respData) {
+                        const cardContainer = $("#card-container");
+                        cardContainer.empty();
+
+                        if (respData.length > 0) {
+                            for (let i = 0; i < respData.length; i++) {
+                                let imgToUrl = respData[i].firstimage;
+                                if((respData[i].firstimage).toString() === '') {
+                                    imgToUrl = "/img/noimg.jpg";
+                                }
+                                const card = `
+                                    <div class="card">
+                                        <img class="cardImg" src="${imgToUrl}" alt="">
+                                        <div class="cardBody">
+                                            <span class="cardTitle">${respData[i].title}</span>
+                                            <span class="cardText">${respData[i].addr1}</span>
+                                        </div>
+                                    </div>
+                            `;
+                                cardContainer.append(card);
+                            }
+                        } else {
+                            cardContainer.append('<div class="col-12"><p>현재 진행 중인 지역 축제가 없습니다.</p></div>');
+                        }
+                    },
+                    error: function () {
+                        alert("통신 중 오류 발생");
+                    }
+                });
+            }
+            loadFestival();
+
+            // 페이지 로드 시 버튼 숨기기
+            $('#scrollToTop').show();
+            $('#scrollToBottom').show();
+
+            // 맨 위로 스크롤
+            $('#scrollToTop').click(function () {
+                $('html, body').animate({scrollTop: 0}, 300); // 속도를 300 밀리초로 설정
+            });
+
+            // 맨 아래로 스크롤
+            $('#scrollToBottom').click(function () {
+                $('html, body').animate({scrollTop: $(document).height() - $(window).height()}, 300); // 속도를 300 밀리초로 설정
+            });
+        });
+    </script>
+</head>
+<body>
+<header th:replace="~{/layout/header :: header-basic}"></header>
+<header th:replace="~{layout/header :: header-banner}"></header>
+<main>
+    <section>
+        <div class="container">
+            <input type="hidden" th:value="${areaCode}" id="areaCode">
+            <input type="hidden" th:value="${areaName}" id="areaName">
+            <h2 class="text-center my-4"><span th:text="${areaName}"></span>의 행사 정보</h2>
+            <div class="sleepOnMainSection" id="card-container">
+                <div class="text-center">
+                    <p>현재 진행 중인 지역 축제가 없습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 스크롤 버튼 -->
+    <div id="scrollButtons">
+        <button id="scrollToTop" class="scroll-btn"><i class="fa-solid fa-chevron-up"></i></button>
+        <button id="scrollToBottom" class="scroll-btn"><i class="fa-solid fa-angle-down"></i></button>
+    </div>
+</main>
+<footer th:replace="~{/layout/footer :: footer}"></footer>
+</body>
+</html>

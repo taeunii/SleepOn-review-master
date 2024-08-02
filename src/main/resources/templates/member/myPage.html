@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SleepOn - 마이페이지</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/bootstrap.bundle.js"></script>
+</head>
+<body>
+<header th:replace="~{layout/header :: header-basic}"></header>
+<header th:replace="~{layout/header :: header-banner}"></header>
+<main>
+    <section class="ProfileSection">
+        <div class="profileHeader">
+            <span class="orbit-regular">My Page</span>
+            <span class="orbit-regular" th:text="|${user.name}님, 반갑습니다.|"></span>
+        </div>
+        <!-- 리뷰, 문의 보기 -->
+        <div class="profileBody">
+            <div class="polaroidSection">
+                <div class="profileCard polaroidCard" onclick="location.href='/SleepOn/inquiry'">
+                    <div class="polaroidHeader">
+                        <i class="fa-regular fa-comments"></i>
+                    </div>
+                    <div class="polaroidBody">
+                        <span th:text="|${user.name}님의 문의 내역|"></span>
+                        <strong class="span1" th:text="|${cancelCount}개|"></strong>
+                    </div>
+                </div>
+                <div class="profileCard polaroidCard" onclick="location.href='/SleepOn/review'">
+                    <div class="polaroidHeader">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </div>
+                    <div class="polaroidBody">
+                        <span th:text="|${user.name}님의 리뷰 내역|"></span>
+                        <strong class="span1" th:text="|${reviewCount}개|"></strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 예약 확인 -->
+        <div class="reservationSection">
+            <div class="profileHeader reservationHeader">
+                <span class="orbit-regular">My Reservation</span>
+                <span class="orbit-regular" th:text="|${user.name}님의 예약 내역|"></span>
+            </div>
+            <div class="reservationBody" id="reservationList">
+            </div>
+        </div>
+        <!-- 리뷰 쓸 예약 목록 -->
+        <div class="reservationSection">
+            <div class="profileHeader reviewHeader">
+                <span class="orbit-regular">My Review</span>
+                <span class="orbit-regular" th:text="|${user.name}님, 후기를 남겨주세요.|"></span>
+            </div>
+            <div class="reservationBody" th:if="${#lists.size(lastReserv) > 0}" th:each="item : ${lastReserv}">
+                <div class="reviewCardSection">
+                    <div class="reservationIcon">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <div class="reviewCard">
+                        <div class="reservationCardHeader">
+                            <span th:text="${item.getRoomTitle()}"></span>
+                        </div>
+                        <div class="reservationCardGrid">
+                            <span>체크인</span>
+                            <span th:text="${item.getCheckinTime()}"></span>
+                        </div>
+                        <div class="reservationCardGrid">
+                            <span>체크아웃</span>
+                            <span th:text="${item.getCheckoutTime()}"></span>
+                        </div>
+                        <div class="text-end">
+                            <span class="d-none" th:text="${item.idx}"></span>
+                            <button class="BackRedBtn btn-write">리뷰 쓰기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="reservationBody" th:unless="${#lists.size(lastReserv) > 0}">
+                <div class="nonReviewCard text-center">
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 스크롤 버튼 -->
+    <div id="scrollButtons">
+        <button id="scrollToTop" class="scroll-btn"><i class="fa-solid fa-chevron-up"></i></button>
+        <button id="scrollToBottom" class="scroll-btn"><i class="fa-solid fa-angle-down"></i></button>
+    </div>
+</main>
+<footer th:replace="~{/layout/footer :: footer}"></footer>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function (){
+        // 예약 취소 함수
+        window.cancelReservation = function(reservationId) {
+            $.ajax({
+                url: `/SleepOn/cancelReservation/${reservationId}`,
+                type: "POST",
+                success: function (response) {
+                    alert(response);
+                    loadReservationData();
+                },
+                error: function (xhr, status, error) {
+                    alert("예약 취소 중 오류가 발생했습니다: " + xhr.responseText);
+                }
+            });
+        }
+
+        // 날짜 데이터 포맷 함수
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = ('0' + (date.getMonth() + 1)).slice(-2); // 월을 2자리 숫자로 포맷
+            const day = ('0' + date.getDate()).slice(-2); // 일을 2자리 숫자로 포맷
+            return `${year}-${month}-${day}`;
+        }
+
+        // 예약 데이터 로드 함수
+        function loadReservationData() {
+            $.ajax({
+                url: "/SleepOn/reservations",
+                type: "get",
+                success: function (data) {
+                    const reservationList = $("#reservationList");
+                    reservationList.empty();
+
+                    if (data.length > 0) {
+                        data.forEach(function (reservation) {
+                            const formattedDate = formatDate(reservation.reservData);
+                            let reservCheck = "";
+                            let iconClass = "";
+                            if (reservation.reservCancle === 'Y') {
+                                reservCheck = "예약 취소";
+                                iconClass="fa-solid fa-ban";
+                            }
+                            else {
+                                reservCheck = "예약 확정";
+                                iconClass ="fa-regular fa-circle-check";
+                            }
+                            const reservationItem = `
+                            <div class="reservationCardSection">
+                                <div class="reservationCard">
+                                    <div class="reservationCardHeader">
+                                        <span>${reservation.roomTitle}</span>
+                                        <span class="Score">(${reservCheck})</span>
+                                    </div>
+                                    <div class="reservationCardGrid">
+                                        <span>예약날짜</span>
+                                        <span>${formattedDate}</span>
+                                    </div>
+                                    <div class="reservationCardGrid">
+                                        <span>체크인</span>
+                                        <span>${reservation.checkinTime}</span>
+                                    </div>
+                                    <div class="reservationCardGrid">
+                                        <span>체크아웃</span>
+                                        <span>${reservation.checkoutTime}</span>
+                                    </div>
+                                    <div class="reservationBtn">
+                                        <button class="BoarderBtn" onclick="cancelReservation(${reservation.idx})">예약취소</button>
+                                    </div>
+                                </div>
+                                <div class="reservationIcon">
+                                    <i class="${iconClass}"></i>
+                                </div>
+                            </div>
+                            `;
+                            reservationList.append(reservationItem);
+                        });
+                    } else {
+                        reservationList.append('<p>예약 내역이 없습니다.</p>');
+                    }
+                },
+                error: function () {
+                    alert("예약 내역을 불러오는 중 오류가 발생했습니다.");
+                }
+            });
+        }
+
+        // 예약 데이터 로드
+        loadReservationData();
+
+        // 페이지 로드 시 버튼 숨기기
+        $('#scrollToTop').show();
+        $('#scrollToBottom').show();
+
+        // 맨 위로 스크롤
+        $('#scrollToTop').click(function () {
+            $('html, body').animate({scrollTop: 0}, 300); // 속도를 300 밀리초로 설정
+        });
+
+        // 맨 아래로 스크롤
+        $('#scrollToBottom').click(function () {
+            $('html, body').animate({scrollTop: $(document).height() - $(window).height()}, 300); // 속도를 300 밀리초로 설정
+        });
+        
+        $(".btn-write").on("click", function () {
+            const a = $(this);
+            const b = a.prev();
+            const c = b.text();
+
+            location.href="/SleepOn/reviewWrite?idx=" + c;
+        })
+    });
+</script>
+</body>
+</html>

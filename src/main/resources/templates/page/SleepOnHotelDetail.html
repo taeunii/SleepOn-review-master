@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SleepOn - 호텔 정보</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="/js/bootstrap.bundle.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function addCommas(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            function loadInfoData() {
+                const contentId = $('#contentId').val();
+                const hotelTitle = $('#hotelTitle');
+                $.ajax({
+                    url: "/SleepOn/HotelDetailInfo",
+                    type: "post",
+                    data: {contentId: contentId},
+                    success: function (respData) {
+                        const container = $('#roomCommon');
+                        container.empty();
+
+                        if (respData.length > 0) {
+                            for (let i = 0; i < respData.length; i++) {
+                                hotelTitle.text(respData[i].title + " 객실 정보");
+                                let imgToUrl = respData[i].firstimage || '/img/noimg.jpg';
+                                console.log("Image URL: ", imgToUrl);
+                                let homepage = respData[i].homepage || '홈페이지가 없습니다.';
+                                let tel = respData[i].tel || '전화번호가 없습니다.';
+                                const tag = `
+                                <div>
+                                    <img alt="" src="${imgToUrl}" class="hotelDetailImg">
+                                </div>
+                                <div class="hotelDetailBody">
+                                    <div class="hotelTitle">
+                                        <span>${respData[i].title}</span>
+                                    </div>
+                                    <div class="hotelDetail">
+                                        <i class="fa-solid fa-info-circle"></i>
+                                        <span>${respData[i].smallClassificationName}</span>
+                                    </div>
+                                    <div class="hotelDetail">
+                                        <i class="fa-solid fa-desktop"></i>
+                                        <span>${homepage}</a>
+                                    </div>
+                                    <div class="hotelDetail">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                        <span>${respData[i].addr1}</span>
+                                    </div>
+                                    <div class="hotelDetail">
+                                        <i class="fa-solid fa-phone-volume"></i>
+                                        <span>${tel}</span>
+                                    </div>
+                                    <div class="hotelTextArea">
+                                        <span>&nbsp;</span>
+                                        <span class="Score">${respData[i].overview}</span>
+                                    </div>
+                                </div>
+                                `;
+                                container.append(tag);
+                            }
+                        } else {
+                            container.append('<div class="col-12"><p>조회된 데이터가 없습니다.</p></div>');
+                        }
+                    },
+                    error: function () {
+                        alert("호텔 공통 정보 통신 중 오류 발생");
+                    }
+                });
+            }
+
+            function loadRoomInfoData() {
+                const contentId = $('#contentId').val();
+                console.log(contentId);
+                $.ajax({
+                    url: "/SleepOn/HotelDetailRoom",
+                    type: "post",
+                    data: {contentId: contentId},
+                    success: function (respData) {
+                        const container = $('#roomInfo');
+                        container.empty();
+
+                        if (respData.length > 0) {
+                            for (let i = 0; i < respData.length; i++) {
+                                let imgToUrl = respData[i].roomimg1 || '/img/noimg.jpg';
+                                console.log("room Image URL: ", imgToUrl);
+                                let roombasecount = respData[i].roombasecount || '2';
+                                console.log(roombasecount);
+                                let roommaxcount = respData[i].roommaxcount || roombasecount;
+                                console.log(roommaxcount);
+                                // 주중 금액 (비성수기/성수기)
+                                let weekdayFee = "";
+                                console.log(respData[i].roomoffseasonminfee1);
+                                if (respData[i].roomoffseasonminfee1 !== "0" && respData[i].roompeakseasonminfee1 !== "0") {
+                                    weekdayFee = `${addCommas(respData[i].roomoffseasonminfee1)}원 (비성수기) / ${addCommas(respData[i].roompeakseasonminfee1)}원 (성수기)`;
+                                } else {
+                                    weekdayFee = "금액은 홈페이지에 문의해주시기 바랍니다.";
+                                }
+
+                                // 주말 금액 (비성수기/성수기)
+                                let weekendFee = "";
+                                if (respData[i].roomoffseasonminfee2 !== "0" && respData[i].roompeakseasonminfee2 !== "0") {
+                                    weekendFee = `${addCommas(respData[i].roomoffseasonminfee2)}원 (비성수기) / ${addCommas(respData[i].roompeakseasonminfee2)}원 (성수기)`;
+                                } else {
+                                    weekendFee = "금액은 홈페이지에 문의해주시기 바랍니다.";
+                                }
+                                const tag = `
+                        <div class="hotelRoomDetail">
+                            <img class="hotelDetailImg" alt="" src="${imgToUrl}">
+                            <div class="hotelDetailBody">
+                                <div class="hotelTitle">
+                                    <span class="hotelRoomtitle">${respData[i].roomtitle}</span>
+                                </div>
+                                <div class="hotelRoomGrid">
+                                    <span>기준/최대 인원</span>
+                                    <span>${roombasecount}명/${roommaxcount}명</span>
+                                </div>
+                                <div class="hotelRoomGrid">
+                                    <span>주중 금액</span>
+                                    <span>${weekdayFee}</span>
+                                </div>
+                                <div class="hotelRoomGrid">
+                                    <span>주말 금액</span>
+                                    <span>${weekendFee}</span>
+                                </div>
+                                <div class="roomDetailInfoGroup">
+                                        <div class="roomDetailOption">
+                                            <div class="roomDetailOptSection">
+                                                <div class="roomIcon ${respData[i].roombathfacility ? '' : 'roomIconNull'}"><i class="fas fa-shower"></i> 목욕시설</div>
+                                                <div class="roomIcon ${respData[i].roomdryer ? '' : 'roomIconNull'}"><i class="fas fa-wind"></i> 드라이기</div>
+                                                <div class="roomIcon ${respData[i].roombath ? '' : 'roomIconNull'}"><i class="fas fa-bath"></i> 욕조</div>
+                                                <div class="roomIcon ${respData[i].roomhometheater ? '' : 'roomIconNull'}"><i class="fas fa-tv"></i> 홈시어터</div>
+                                                <div class="roomIcon ${respData[i].roomaircondition ? '' : 'roomIconNull'}"><i class="fas fa-fan"></i> 에어컨</div>
+                                                <div class="roomIcon ${respData[i].roomtv ? '' : 'roomIconNull'}"><i class="fas fa-tv"></i> 티비</div>
+                                                <div class="roomIcon ${respData[i].roompc ? '' : 'roomIconNull'}"><i class="fas fa-desktop"></i> PC</div>
+                                                <div class="roomIcon ${respData[i].roomcable ? '' : 'roomIconNull'}"><i class="fas fa-tv"></i> 케이블 설치</div>
+                                                <div class="roomIcon ${respData[i].roominternet ? '' : 'roomIconNull'}"><i class="fas fa-globe"></i> 인터넷</div>
+                                                <div class="roomIcon ${respData[i].roomfridge ? '' : 'roomIconNull'}"><i class="fas fa-ice-cream"></i> 냉장고</div>
+                                                <div class="roomIcon ${respData[i].roomamenities ? '' : 'roomIconNull'}"><i class="fas fa-soap"></i> 세면도구</div>
+                                                <div class="roomIcon ${respData[i].roomsofa ? '' : 'roomIconNull'}"><i class="fas fa-couch"></i> 소파</div>
+                                                <div class="roomIcon ${respData[i].roomcooking ? '' : 'roomIconNull'}"><i class="fas fa-utensils"></i> 취사여부</div>
+                                                <div class="roomIcon ${respData[i].roomtable ? '' : 'roomIconNull'}"><i class="fas fa-table"></i> 테이블</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <div class="hotelRoomBtn">
+                                    <button class="BoarderBtn" type="button" onclick="PayMentPage(this)" data-roomtitle="${respData[i].roomtitle}" data-roommaxcount="${respData[i].roommaxcount}">
+                                        예약하기
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                                container.append(tag);
+                            }
+                        } else {
+                            container.append('<div class="text-center"><p>조회된 데이터가 없습니다.</p></div>');
+                        }
+                    },
+                    error: function () {
+                        alert("객실 상세 정보 통신 중 오류 발생");
+                    }
+                });
+            }
+            loadInfoData();
+            loadRoomInfoData();
+
+            // 결제 창 이동
+            window.PayMentPage = function (button){
+                const roomTitle = $(button).data("roomtitle");
+                const roomMaxCount = $(button).data("roommaxcount");
+                console.log("roomTitle : " + roomTitle);
+                const contentId = $('#contentId').val();
+                const user = $('#user').val();
+                console.log(user.toString());
+                const checkIn = $('#checkIn').val();
+                const checkOut = $('#checkOut').val();
+                const userCnt = $('#userCnt').val();
+                if (user.toString() === '') {
+                    console.log("회원가입");
+                    alert("회원가입 후 사용");
+                    return false;
+                }
+                else{
+                    if (!checkIn || !checkOut || !userCnt) {
+                        alert("체크인과 체크아웃 날짜, 인원수를 선택해주세요.")
+                        return false;
+                    }
+                    if (userCnt > roomMaxCount){
+                        alert("최대 인원 수가 " + roomMaxCount + "명입니다. 다른 방을 선택해주세요.");
+                        return false;
+                    }
+                    // 선택된 값들을 URL 파라미터로 넘겨 페이지 이동
+                    window.location.href = "/SleepOn/Credit?contentId=" + encodeURIComponent(contentId)
+                        + "&checkIn=" + encodeURIComponent(checkIn)
+                        + "&checkOut=" + encodeURIComponent(checkOut)
+                        + "&userCnt=" + encodeURIComponent(userCnt) + "&roomtitle=" + encodeURIComponent(roomTitle);
+                }
+            }
+
+            // 체크인 날짜가 오늘 이전으로 선택되지 않도록 설정
+            const today = new Date().toISOString().split("T")[0];
+            $('#checkIn').attr('min', today);
+
+            // 체크인 날짜 선택 시 체크아웃 날짜 제약 설정
+            $('#checkIn').on('change', function () {
+                const checkinDate = $(this).val();
+                $('#checkOut').attr('min', checkinDate);
+            });
+
+            // 체크아웃 날짜 선택 시 체크인 날짜가 체크아웃 날짜보다 이후일 수 없도록 설정
+            $('#checkOut').on('change', function () {
+                const checkinDate = $('#checkIn').val();
+                if ($(this).val() <= checkinDate) {
+                    alert("체크아웃 날짜는 체크인 날짜보다 이후여야 합니다.");
+                    $(this).val('');
+                }
+            });
+
+            // 인원 수 선택, input 창 포커스 시 선택되어있던 인원 없애기
+            $('#userCnt').on('focus', function () {
+                $(this).val("");
+            });
+
+            // 페이지 로드 시 버튼 숨기기
+            $('#scrollToTop').show();
+            $('#scrollToBottom').show();
+
+            // 맨 위로 스크롤
+            $('#scrollToTop').click(function () {
+                $('html, body').animate({scrollTop: 0}, 300); // 속도를 300 밀리초로 설정
+            });
+
+            // 맨 아래로 스크롤
+            $('#scrollToBottom').click(function () {
+                $('html, body').animate({scrollTop: $(document).height() - $(window).height()}, 300); // 속도를 300 밀리초로 설정
+            });
+        });
+    </script>
+</head>
+<body>
+<header th:replace="~{/layout/header :: header-basic}"></header>
+<header th:replace="~{layout/header :: header-banner}"></header>
+<main>
+    <input id="contentId" th:value="${contentId}" type="hidden">
+    <section class="my-2">
+        <div class="search-bar-container">
+            <div class="search-bar">
+                <input type="hidden" id="user" th:value="${user}">
+                    <i class="search-bar-icon fa-solid fa-plane-departure"></i>
+                <div class="search-item">
+                    <label>체크인</label>
+                    <input class="BoxBorderNon" id="checkIn" th:value="${checkIn}" type="date">
+                </div>
+                <div class="search-item">
+                    <label>체크아웃</label>
+                    <input class="BoxBorderNon" id="checkOut" th:value="${checkOut}" type="date">
+                </div>
+                <div class="search-item">
+                    <label>여행자</label>
+                    <input class="BoxBorderNon" id="userCnt" th:value="${userCnt}" type="number" min="1">
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="my-2">
+        <div class="container">
+            <div id="roomCommon" class="hotelDetailSection"></div>
+        </div>
+    </section>
+    <section class="my-2">
+        <div class="container">
+            <div class="inquiryTitle">
+                <span id="hotelTitle">객실 정보</span>
+                <span class="hotelIconAni fa-solid fa-cart-flatbed-suitcase"></span>
+            </div>
+            <div id="roomInfo" class="hotelRoomSection"></div>
+        </div>
+    </section>
+    <!-- 스크롤 버튼 -->
+    <div id="scrollButtons">
+        <button id="scrollToTop" class="scroll-btn"><i class="fa-solid fa-chevron-up"></i></button>
+        <button id="scrollToBottom" class="scroll-btn"><i class="fa-solid fa-angle-down"></i></button>
+    </div>
+</main>
+<footer th:replace="~{/layout/footer :: footer}"></footer>
+</body>
+</html>
