@@ -37,4 +37,7 @@ public interface UserReviewRepository extends JpaRepository<UserReview, Integer>
                       @Param("reviewText") String reviewText);
 
     void deleteByIdx(int id);
+
+    @Query("SELECT c FROM UserReview c WHERE c.contentId = :contentId ORDER BY c.createdAt DESC")
+    List<UserReview> findByContentIdOrderByCreatedAtDesc(); // 호텔별 고객 리뷰 목록 보기
 }

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
     <link href="/css/bootstrap.css" rel="stylesheet">
     <link href="/css/styles.css" rel="stylesheet">
     <script src="/js/bootstrap.bundle.js"></script>
@@ -241,6 +242,31 @@
             $('#scrollToBottom').click(function () {
                 $('html, body').animate({scrollTop: $(document).height() - $(window).height()}, 300); // 속도를 300 밀리초로 설정
             });
+
+
+            // 리뷰
+            function loadReviewData() {
+                const contentId = $('#contentId').val();
+                console.log(contentId);
+                $.ajax({
+                    url: "/SleepOn/reviewDetail",
+                    type: "post",
+                    data: {contentId: contentId},
+                    success: function (respData) {
+                        const container = $('#hotelReview');
+                        container.empty();
+
+                        if (respData.length > 0) {
+                            for (let i = 0; i < respData.length; i++) {
+                                const tag = `
+                                <span th:text="${item.getReviewText()}">리뷰</span>
+                                `;
+                                container.append(tag);
+                            }
+                        }
+                    },
+                });
+            }
         });
     </script>
 </head>
@@ -281,6 +307,12 @@
                 <span class="hotelIconAni fa-solid fa-cart-flatbed-suitcase"></span>
             </div>
             <div id="roomInfo" class="hotelRoomSection"></div>
+        </div>
+    </section>
+
+    <section class="my-2">
+        <div class="container">
+            <div id="hotelReview" class="hotelReviewSection"></div>
         </div>
     </section>
     <!-- 스크롤 버튼 -->

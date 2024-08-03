@@ -680,6 +680,7 @@ public class TourController {
         return "redirect:/SleepOn/login";
     }
 
+    // 리뷰 수정
     @RequestMapping("/updateReview")
     public String updateReview(@RequestParam("id") int id,
                                @RequestParam("reviewLocationNum") int reviewLocationNum,
@@ -701,6 +702,19 @@ public class TourController {
     public String deleteReview(@RequestParam("id") int id) throws Exception {
         tourService.deleteUserReview(id);
         return "redirect:/SleepOn/review";
+    }
+
+    // 호텔별 리뷰목록 페이지 - 작성한 댓글
+    @RequestMapping("/hotelReviewList")
+    public ModelAndView hotelReviewList(@RequestParam("contentId") String contentId, HttpServletRequest request, Model model) throws Exception {
+        addSessionAttributesToModel(request, model);
+
+        ModelAndView mv = new ModelAndView("review/HotelReviewList");
+
+        List<UserReview> itemList = tourService.getHotelReviewList();
+        mv.addObject("itemList", itemList);
+
+        return mv;
     }
 }
 

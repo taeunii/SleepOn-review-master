@@ -316,4 +316,10 @@ public class TourServiceImpl implements TourService{
     public void deleteUserReview(int id) throws Exception {
         reviewRepository.deleteByIdx(id);
     }
+
+    // 호텔별 고객 리뷰 목록
+    @Override
+    public List<UserReview> getHotelReviewList() throws Exception {
+        return reviewRepository.findByContentIdOrderByCreatedAtDesc();
+    }
 }
