@@ -648,20 +648,6 @@ public class TourController {
         return "redirect:/SleepOn/review";
     }
 
-//    // 리뷰 수정
-//    @PutMapping("/review/{id}")
-//    public String updateReview(@RequestParam("id") int id, UserReview review) throws Exception {
-//        tourService.saveUserReview(review);
-//        return "redirect:/SleepOn/review";
-//    }
-
-    // 리뷰 삭제
-    @DeleteMapping("/review/{id}")
-    public String deleteReview(@RequestParam("id") int id) throws Exception {
-        tourService.deleteUserReview(id);
-        return "redirect:/SleepOn/review";
-    }
-
 
     // 리뷰 상세보기
     @RequestMapping("/reviewDetail")
@@ -694,4 +680,27 @@ public class TourController {
         return "redirect:/SleepOn/login";
     }
 
+    @RequestMapping("/updateReview")
+    public String updateReview(@RequestParam("id") int id,
+                               @RequestParam("reviewLocationNum") int reviewLocationNum,
+                               @RequestParam("reviewCheckinNum") int reviewCheckinNum,
+                               @RequestParam("reviewCommunicationNum") int reviewCommunicationNum,
+                               @RequestParam("reviewCleanlinessNum") int reviewCleanlinessNum,
+                               @RequestParam("reviewSatisfactionNum") int reviewSatisfactionNum,
+                               @RequestParam("reviewText") String reviewText,
+                               HttpServletRequest request, Model model) throws Exception {
+        addSessionAttributesToModel(request, model);
+
+        tourService.updateUserReview(id, reviewLocationNum, reviewCheckinNum, reviewCommunicationNum, reviewCleanlinessNum, reviewSatisfactionNum, reviewText);
+
+        return "redirect:/SleepOn/review";
+    }
+
+    // 리뷰 삭제
+    @RequestMapping("/deleteReview")
+    public String deleteReview(@RequestParam("id") int id) throws Exception {
+        tourService.deleteUserReview(id);
+        return "redirect:/SleepOn/review";
+    }
 }
+

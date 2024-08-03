@@ -297,10 +297,23 @@ public class TourServiceImpl implements TourService{
         reviewRepository.save(userReview);
     }
 
+    // 고객 전용 리뷰 수정
+    @Override
+    public void updateUserReview(int id,
+                                 int reviewLocationNum,
+                                 int reviewCheckinNum,
+                                 int reviewCommunicationNum,
+                                 int reviewCleanlinessNum,
+                                 int reviewSatisfactionNum,
+                                 String reviewText) throws Exception {
+        userReviewRepository.updateReview(id, reviewLocationNum, reviewCheckinNum, reviewCommunicationNum, reviewCleanlinessNum, reviewSatisfactionNum, reviewText);
+    }
+
+
     // 고객 리뷰 삭제
     @Override
     @Transactional
     public void deleteUserReview(int id) throws Exception {
-        ucRepository.deleteByIdx(id);
+        reviewRepository.deleteByIdx(id);
     }
 }

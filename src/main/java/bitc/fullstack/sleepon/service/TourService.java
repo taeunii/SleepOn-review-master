@@ -62,11 +62,16 @@ public interface TourService {
     // 고객 전용 리뷰 작성
     void saveUserReview(UserReview userReview) throws Exception;
 
+    // 고객 전용 리뷰 수정
+    void updateUserReview(int id,
+                          int reviewLocationNum,
+                          int reviewCheckinNum,
+                          int reviewCommunicationNum,
+                          int reviewCleanlinessNum,
+                          int reviewSatisfactionNum,
+                          String reviewText) throws Exception;
+
     // 고객 리뷰 삭제
     void deleteUserReview(int id) throws Exception;
-
-
-//    // 고객 전용 리뷰 작성
-//    UserReview getUserReview(String userId,int reservationIdx, UserReview userReview) throws Exception;
 
 }
