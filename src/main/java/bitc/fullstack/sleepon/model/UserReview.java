@@ -1,7 +1,6 @@
 package bitc.fullstack.sleepon.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,6 +17,9 @@ public class UserReview {
     @ManyToOne
     @JoinColumn(name = "reserv_id", nullable = false)
     private UserReservation reservation; // 예약번호
+
+    @Column(name = "review_num", nullable = false)
+    private int reviewNum; // 별점
 
     @Column(name = "review_location_num", nullable = false)
     private int reviewLocationNum; // 별점(위치)
@@ -73,6 +75,14 @@ public class UserReview {
 
     public void setReservation(UserReservation reservation) {
         this.reservation = reservation;
+    }
+
+    public int getReviewNum() {
+        return reviewNum;
+    }
+
+    public void setReviewNum(int reviewNum) {
+        this.reviewNum = reviewNum;
     }
 
     public int getReviewLocationNum() {
@@ -155,17 +165,13 @@ public class UserReview {
         this.reviewSubmitted = reviewSubmitted;
     }
 
-    //    별점 평균
-    public int avg_reviewnum() {
-        int avgReviewNum = 0;
-
-        avgReviewNum = (getReviewLocationNum() + getReviewCheckinNum() + getReviewCommunicationNum() + getReviewCleanlinessNum() + getReviewSatisfactionNum()) / 5;
-
-        return avgReviewNum;
-    }
-
     //    리뷰가 제출된 경우 true 반환
     public boolean isReviewSubmitted() {
         return "Y".equals(reviewSubmitted);
+    }
+
+    // 별점 평균 내기
+    public void updateReviewNum() {
+        this.reviewNum = (this.reviewLocationNum + this.reviewCheckinNum + this.reviewCommunicationNum + this.reviewCleanlinessNum + this.reviewSatisfactionNum) / 5;
     }
 }

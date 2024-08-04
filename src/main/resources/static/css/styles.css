@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Orbit&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Orbit&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
 @font-face {
@@ -637,12 +638,42 @@ button {
 }
 .reviewCard{
     border: 1px solid rgba(208, 208, 208, 0.45);
-    border-right: 3px solid #FF385C;
+    border-right: 3px solid #ff5a5f;
     padding: 1em;
     border-top-left-radius: 2em;
     border-bottom-left-radius: 2em;
     display: flex;
     flex-direction: column;
+}
+/* 리뷰 작성 */
+.reviewGrid{
+    display: grid;
+    grid-template-columns: 0.2fr 1.5fr;
+    padding: 0.5em;
+    text-align: left;
+}
+.reviewTitle{
+    font-size: 25px;
+}
+.reviewStarGrid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0.5em;
+}
+.reviewText{
+    padding: 0.3em;
+}
+.reviewInput{
+    width: 100%;
+    border-radius: 1.5em;
+    border: 1px solid rgba(208, 208, 208, 0.45);
+    padding: 0.3em;
+    text-align: left;
+    justify-self: left;
+}
+.reviewInput select{
+    width: 100%;
 }
 /* inquiry */
 /* inquiry, 관리자 및 고객 list */
@@ -765,128 +796,6 @@ button {
 .inquiryInput select{
     width: 200px;
 }
-
-/* review */
-.reviewTitle{
-    display: flex;
-    gap: 0.3em;
-    align-items: center;
-    padding: 1em;
-    border-bottom: 1px solid #dedede;
-}
-.reviewTitle span{
-    font-size: 20px;
-}
-.reviewTitle i{
-    font-size: 40px;
-    color:#FF585D;
-}
-.reviewContainer{
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-}
-.reviewSection{
-    text-align: center;
-    display: grid;
-    grid-template-columns: 0.3fr 1.2fr 0.8fr 1fr 0.8fr;
-    padding: 1em;
-}
-.reviewHeader{
-    color: #989898;
-}
-.reviewBody{
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 0.3em;
-    background-color: white;
-    color: #777777;
-    transition: transform 0.3s;
-}
-.reviewBody a{
-    text-decoration: none;
-    color: black;
-}
-.reviewBody:hover{
-    transform: scale(1.01);
-}
-.reviewBtn{
-    display: flex;
-    justify-content: end;
-    gap: 0.5em;
-}
-.reviewBtn a{
-    text-decoration: none;
-    padding: 0.3em 0.8em;
-    border-radius: 1.5em;
-    transition: all ease-in 0.3s;
-}
-/* review - detail */
-.reviewCard{
-    display: grid;
-    grid-template-columns: 0.1fr 1fr;
-    grid-template-rows: repeat(3, auto);
-    gap: 0.3em;
-}
-.adminReviewCard{
-    display: grid;
-    grid-template-columns: 1fr 0.1fr;
-    grid-template-rows: repeat(3, auto);
-    gap: 0.3em;
-}
-.reviewProfile {
-    grid-row: 1/4;
-    margin-bottom: 15px;
-    display: grid;
-    justify-items: center;
-    align-items: flex-end;
-    text-align: center;
-    color: #FF385C;
-}
-.reviewProfile span{
-    font-size: 50px;
-}
-.reviewProfileSpin {
-    animation: spin 5s linear infinite;
-}
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-.reviewQuest{
-    display: flex;
-    grid-row: 1/2;
-}
-.reviewBubble{
-    grid-row: 2/3;
-    padding: 1em;
-    text-align: justify;
-    border-radius: 0.5em;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-.reviewData {
-    display: flex;
-    grid-row: 3/4;
-}
-.reviewWrite {
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    margin: 0.5em;
-}
-.reviewWrite label{
-    padding-left: 15px;
-    font-size: 19px;
-}
-.reviewInput{
-    border-radius: 1.5em;
-    padding: 0.5em;
-    border: 1px solid rgba(217, 217, 217, 0.73);
-    width: 100%;
-}
-.reviewInput select{
-    width: 200px;
-}
-
 
 /* main page - hotel detail */
 .search-bar-icon{
@@ -1037,16 +946,6 @@ button {
     align-items: flex-end;
 }
 
-.hotelReviewSection {
-    display: flex;
-    gap : 1em;
-    align-items: center;
-    padding: 1em;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
 /* 결제 페이지 */
 .paymentBody {
     background-color: #f5f5f5;
@@ -1098,4 +997,7 @@ button {
     background-color: #FF585D;
 }
 
-
+.hotelReviewSection .card {
+    height: 150px; /* 전체 카드 높이 고정 */
+    width: auto;
+}

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -76,15 +77,14 @@
                             <span th:text="${item.getCheckoutTime()}"></span>
                         </div>
                         <div class="text-end">
-                            <span class="d-none" th:text="${item.idx}"></span>
-                            <button class="BackRedBtn btn-write">리뷰 쓰기</button>
+                            <button type="button" th:value="${item.getIdx()}" class="BackRedBtn" onclick="PageWrite(this)">리뷰 쓰기</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="reservationBody" th:unless="${#lists.size(lastReserv) > 0}">
                 <div class="nonReviewCard text-center">
-
+                    <p>작성할 후기가 없습니다.</p>
                 </div>
             </div>
         </div>
@@ -203,14 +203,12 @@
         $('#scrollToBottom').click(function () {
             $('html, body').animate({scrollTop: $(document).height() - $(window).height()}, 300); // 속도를 300 밀리초로 설정
         });
-        
-        $(".btn-write").on("click", function () {
-            const a = $(this);
-            const b = a.prev();
-            const c = b.text();
 
-            location.href="/SleepOn/reviewWrite?idx=" + c;
-        })
+        // 리뷰 작성
+        window.PageWrite = function(button){
+            const idx = button.value;
+            window.location.href = "/SleepOn/reviewWrite?idx=" + encodeURIComponent(idx);
+        }
     });
 </script>
 </body>

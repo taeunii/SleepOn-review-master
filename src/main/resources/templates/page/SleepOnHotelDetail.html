@@ -169,8 +169,78 @@
                     }
                 });
             }
+
+            // 리뷰
+            function loadReviewData() {
+                const contentId = $('#contentId').val();
+                console.log(contentId);
+                $.ajax({
+                    url: "/SleepOn/hotelReviews",
+                    type: "get",
+                    data: { contentId: contentId },
+                    success: function (respData) {
+                        console.log(respData); // 데이터 확인
+                        const container = $('#hotelReview');
+                        container.empty();
+
+                        if (respData.length > 0) {
+                            for (let i = 0; i < respData.length; i++) {
+                                const stars = generateStars(respData[i].reviewNum);
+                                const reviewDate = respData[i].updatedAt ? formatDate(respData[i].updatedAt) : formatDate(respData[i].createdAt);
+                                const reviewText = respData[i].reviewText || '리뷰 내용 없음'; // 리뷰 내용이 없을 때 기본값
+                                const tag = `
+                                    <div class="card" style="height: 100%;">
+                                        <div class="cardBody">
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="card-title">${respData[i].user.name}</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <div class="card-text">
+                                                        <div>
+                                                            <span>${stars}</span>
+                                                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${reviewDate}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span>${reviewText}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                container.append(tag);
+                            }
+                        } else {
+                            container.append('<div class="col-12"><p>조회된 데이터가 없습니다.</p></div>');
+                        }
+                    },
+                    error: function () {
+                        alert("통신 중 오류 발생");
+                    }
+                });
+            }
+            // 별점 생성 함수
+            function generateStars(reviewNum) {
+                let stars = '';
+                for (let i = 1; i <= 5; i++) {
+                    const starClass = i <= reviewNum ? 'filled-star' : 'empty-star';
+                    stars += `<i class="fa-solid fa-star ${starClass}"></i>`;
+                }
+                return stars;
+            }
+            // 날짜 형식 변환 함수
+            function formatDate(dateString) {
+                const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ko-KR', options).replace(',', '');
+            }
+
+
             loadInfoData();
             loadRoomInfoData();
+            loadReviewData();
 
             // 결제 창 이동
             window.PayMentPage = function (button){
@@ -243,30 +313,6 @@
                 $('html, body').animate({scrollTop: $(document).height() - $(window).height()}, 300); // 속도를 300 밀리초로 설정
             });
 
-
-            // 리뷰
-            function loadReviewData() {
-                const contentId = $('#contentId').val();
-                console.log(contentId);
-                $.ajax({
-                    url: "/SleepOn/reviewDetail",
-                    type: "post",
-                    data: {contentId: contentId},
-                    success: function (respData) {
-                        const container = $('#hotelReview');
-                        container.empty();
-
-                        if (respData.length > 0) {
-                            for (let i = 0; i < respData.length; i++) {
-                                const tag = `
-                                <span th:text="${item.getReviewText()}">리뷰</span>
-                                `;
-                                container.append(tag);
-                            }
-                        }
-                    },
-                });
-            }
         });
     </script>
 </head>
@@ -279,7 +325,7 @@
         <div class="search-bar-container">
             <div class="search-bar">
                 <input type="hidden" id="user" th:value="${user}">
-                    <i class="search-bar-icon fa-solid fa-plane-departure"></i>
+                <i class="search-bar-icon fa-solid fa-plane-departure"></i>
                 <div class="search-item">
                     <label>체크인</label>
                     <input class="BoxBorderNon" id="checkIn" th:value="${checkIn}" type="date">
@@ -312,9 +358,14 @@
 
     <section class="my-2">
         <div class="container">
+            <div class="inquiryTitle">
+                <span id="hotelReviewTitle">리뷰</span>
+                <span class="hotelIconAni fa-solid fa-star"></span>
+            </div>
             <div id="hotelReview" class="hotelReviewSection"></div>
         </div>
     </section>
+
     <!-- 스크롤 버튼 -->
     <div id="scrollButtons">
         <button id="scrollToTop" class="scroll-btn"><i class="fa-solid fa-chevron-up"></i></button>

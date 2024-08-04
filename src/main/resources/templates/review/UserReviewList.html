@@ -56,10 +56,11 @@
                 </span>
                 <span th:if="${item.getReviewText() == null}">-</span>
                 <span th:text="${item.reservation.getRoomTitle()}"></span>
-                <span th:text="${#temporals.format(item.getCreatedAt(), 'yyyy-MM-dd')}"></span>
+                <span th:if="${item.updatedAt != null}" th:text="${#temporals.format(item.getCreatedAt(), 'yyyy-MM-dd')}"></span>
+                <span th:unless="${item.updatedAt != null}" th:text="${#temporals.format(item.getUpdatedAt(), 'yyyy-MM-dd')}"></span>
                 <span>
                     <span th:each="star, stat : ${#numbers.sequence(1, 5)}">
-                        <i class="fa-solid fa-star" th:classappend="${stat.index <= item.avg_reviewnum() - 1} ? 'filled-star' : 'empty-star'"></i>
+                        <i class="fa-solid fa-star" th:classappend="${stat.index <= item.getReviewNum()} ? 'filled-star' : 'empty-star'"></i>
                     </span>
                 </span>
                 <div class="reviewBtn" th:if="${item.getReviewText() == null}">

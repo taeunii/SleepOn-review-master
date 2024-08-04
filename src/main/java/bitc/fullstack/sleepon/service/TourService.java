@@ -2,8 +2,8 @@ package bitc.fullstack.sleepon.service;
 
 import bitc.fullstack.sleepon.dto.FullDataItemDTO;
 import bitc.fullstack.sleepon.dto.detail.DataItemDTO;
-import bitc.fullstack.sleepon.dto.event.FullEventDataItemDTO;
 import bitc.fullstack.sleepon.dto.infor.DataComItemDTO;
+import bitc.fullstack.sleepon.dto.event.FullEventDataItemDTO;
 import bitc.fullstack.sleepon.model.UserCancel;
 import bitc.fullstack.sleepon.model.UserReservation;
 import bitc.fullstack.sleepon.model.UserReview;
@@ -31,7 +31,7 @@ public interface TourService {
     // 고객 전용 예약 정보
     List<UserReservation> getUserReservationDesc(String userId) throws Exception;
     // 지난 예약 목록 - 예약 취소 안한 목록만
-    List<UserReservation> getUserLastReserv(String userId) throws Exception;
+    List<UserReservation> getUserLastReservWithoutReview(String userId) throws Exception;
 
     // 관리자 전용 상담 게시글 목록
     List<UserCancel> getAdminCancelList() throws Exception;
@@ -75,6 +75,9 @@ public interface TourService {
     void deleteUserReview(int id) throws Exception;
 
     // 호텔별 리뷰 목록
-    List<UserReview> getHotelReviewList() throws Exception;
+//    List<UserReview> getReviewsByContentId(String contentId) throws Exception;
+    List<UserReview> getReviewsByContentId(String contentId) throws Exception;
 
+    // 숙소별 작성한 리뷰 수
+    int getCountReviewContentId(String contentId) throws Exception;
 }

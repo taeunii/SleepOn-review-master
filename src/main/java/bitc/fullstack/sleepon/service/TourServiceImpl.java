@@ -4,15 +4,14 @@ import bitc.fullstack.sleepon.dto.FullDataItemDTO;
 import bitc.fullstack.sleepon.dto.FullDataResponseDTO;
 import bitc.fullstack.sleepon.dto.detail.DataItemDTO;
 import bitc.fullstack.sleepon.dto.detail.DataResponseDTO;
-import bitc.fullstack.sleepon.dto.event.FullEventDataItemDTO;
-import bitc.fullstack.sleepon.dto.event.FullEventDataResponseDTO;
 import bitc.fullstack.sleepon.dto.infor.DataComItemDTO;
 import bitc.fullstack.sleepon.dto.infor.DataComResponseDTO;
+import bitc.fullstack.sleepon.dto.event.FullEventDataItemDTO;
+import bitc.fullstack.sleepon.dto.event.FullEventDataResponseDTO;
 import bitc.fullstack.sleepon.mapper.LocationMapper;
 import bitc.fullstack.sleepon.model.UserCancel;
 import bitc.fullstack.sleepon.model.UserReservation;
 import bitc.fullstack.sleepon.model.UserReview;
-import bitc.fullstack.sleepon.repository.SleepOnUserRepository;
 import bitc.fullstack.sleepon.repository.UserCancleRepository;
 import bitc.fullstack.sleepon.repository.UserReservationRepository;
 import bitc.fullstack.sleepon.repository.UserReviewRepository;
@@ -25,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +44,6 @@ public class TourServiceImpl implements TourService{
 
     @Autowired
     UserReviewRepository reviewRepository;
-    @Autowired
-    private UserReviewRepository userReviewRepository;
-    @Autowired
-    private SleepOnUserRepository sleepOnUserRepository;
 
     @Override
     public List<FullDataItemDTO> getItemListUrl(String serviceUrl) throws Exception {
@@ -64,7 +60,7 @@ public class TourServiceImpl implements TourService{
             Unmarshaller um = jc.createUnmarshaller();
 
             FullDataResponseDTO fullData = (FullDataResponseDTO)
- um.unmarshal(url);
+                    um.unmarshal(url);
             itemList = fullData.getBody().getItems().getItemList();
         }
         catch (Exception e) {
@@ -213,10 +209,9 @@ public class TourServiceImpl implements TourService{
                 .collect(Collectors.toList());
     }
 
-    // 지난 예약 정보 - 취소 안한 것만
     @Override
-    public List<UserReservation> getUserLastReserv(String userId) throws Exception {
-        List<UserReservation> reservations = reservationRepository.findByUserIdLastReserv(userId);
+    public List<UserReservation> getUserLastReservWithoutReview(String userId) throws Exception {
+        List<UserReservation> reservations = reservationRepository.findUserLastReservWithoutReview(userId);
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -294,6 +289,7 @@ public class TourServiceImpl implements TourService{
     // 고객 전용 리뷰 저장
     @Override
     public void saveUserReview(UserReview userReview) throws Exception {
+        userReview.updateReviewNum(); // 리뷰 저장 전에 reviewNum 업데이트
         reviewRepository.save(userReview);
     }
 
@@ -306,9 +302,17 @@ public class TourServiceImpl implements TourService{
                                  int reviewCleanlinessNum,
                                  int reviewSatisfactionNum,
                                  String reviewText) throws Exception {
-        userReviewRepository.updateReview(id, reviewLocationNum, reviewCheckinNum, reviewCommunicationNum, reviewCleanlinessNum, reviewSatisfactionNum, reviewText);
+        UserReview userReview = reviewRepository.findById(id).orElseThrow(() -> new Exception("리뷰를 찾을 수 없습니다."));
+        userReview.setReviewLocationNum(reviewLocationNum);
+        userReview.setReviewCheckinNum(reviewCheckinNum);
+        userReview.setReviewCommunicationNum(reviewCommunicationNum);
+        userReview.setReviewCleanlinessNum(reviewCleanlinessNum);
+        userReview.setReviewSatisfactionNum(reviewSatisfactionNum);
+        userReview.setReviewText(reviewText);
+        userReview.setUpdatedAt(LocalDateTime.now());
+        userReview.updateReviewNum(); // 리뷰 수정 전에 reviewNum 업데이트
+        reviewRepository.save(userReview);
     }
-
 
     // 고객 리뷰 삭제
     @Override
@@ -318,8 +322,19 @@ public class TourServiceImpl implements TourService{
     }
 
     // 호텔별 고객 리뷰 목록
+//    @Override
+//    public List<UserReview> getReviewsByContentId(String contentId) throws Exception {
+//        return reviewRepository.findByContentIdOrderByCreatedAtDesc(contentId);
+//    }
     @Override
-    public List<UserReview> getHotelReviewList() throws Exception {
-        return reviewRepository.findByContentIdOrderByCreatedAtDesc();
+    public List<UserReview> getReviewsByContentId(String contentId) throws Exception {
+        List<UserReview> hotelReviews = reviewRepository.findByContentIdOrderByCreatedAtDesc(contentId);
+        return  hotelReviews;
+    }
+
+    // 내가 작성한 리뷰 수
+    @Override
+    public int getCountReviewContentId(String contentId) throws Exception {
+        return reviewRepository.countByContentId(contentId);
     }
 }
